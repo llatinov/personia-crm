@@ -1,10 +1,13 @@
 import NxWelcome from "./nx-welcome";
 
+import { Button } from "@components/ui";
+
 import { Link, Route, Routes } from "react-router-dom";
 
 export function App() {
   return (
     <div>
+      <Button variant="destructive">Test Button</Button>
       <NxWelcome title="@personia-crm/app" />
 
       {/* START: routes */}

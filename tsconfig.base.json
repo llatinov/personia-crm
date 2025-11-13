@@ -16,6 +16,12 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es2022",
-    "customConditions": ["@personia-crm/source"]
+    "customConditions": ["@personia-crm/source"],
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "@components/ui/index.css": ["packages/components/src/index.css"],
+      "@components/ui": ["packages/components/src/index.ts"]
+    }
   }
 }

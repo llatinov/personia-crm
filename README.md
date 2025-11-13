@@ -19,3 +19,8 @@ The monorepo was created mainly with the following commands:
 - Install react plugin - `nx add @nx/react`
 - Add React frontend (no style format, routing, eslint, vitest, no E2E) - `nx g @nx/react:app packages/app --bundler=vite`
 - [Setup Tailwind](https://tailwindcss.com/docs/installation/using-vite)
+- Add shadcn/ui, more info [here](https://pustelto.com/blog/adding-shadcnui-to-nx-monorepo/)
+  - Add separate components library - `nx g @nx/react:library packages/components --bundler=vite` (no test)
+  - Install and configure [Vite and Tailwind](https://tailwindcss.com/docs/installation/using-vite) in components library - `cd packages/components && npm install tailwindcss @tailwindcss/vite --save && cd ../..` (workaround for not possible to have shadcn/ui + Vite + Tailwind 4 + NX)
+  - Init shadcn/ui - `npx shadcn@latest init --cwd packages/components`
+  - Add component - `npx shadcn@latest add --cwd packages/components button`

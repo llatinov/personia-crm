@@ -1,6 +1,7 @@
 /// <reference types='vitest' />
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
+import path from "path";
 import { defineConfig } from "vite";
 
 export default defineConfig(() => ({
@@ -15,6 +16,12 @@ export default defineConfig(() => ({
     host: "localhost"
   },
   plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: {
+      "@components/ui/index.css": path.resolve(__dirname, "../components/src/index.css"),
+      "@components/ui": path.resolve(__dirname, "../components/src/index.ts")
+    }
+  },
   // Uncomment this if you are using workers.
   // worker: {
   //  plugins: [],

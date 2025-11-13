@@ -1,0 +1,6 @@
+## Adding new shadcn/ui component
+
+- New shadcn/ui component is added with command: `npx shadcn@latest add --cwd packages/components <COMPONENT>`.
+- Replace `import { cn } from "@components/ui/lib/utils"` with `import { cn } from "../../lib/utils";`.
+- Exported in `packages\components\src\index.ts`.
+- Run `npx nx format:write` command.
