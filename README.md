@@ -18,3 +18,4 @@ The monorepo was created mainly with the following commands:
 - Add monorepo with (claude code, no CI provider, no remote cache) - `npx create-nx-workspace@latest personia-crm --preset=npm`
 - Install react plugin - `nx add @nx/react`
 - Add React frontend (no style format, routing, eslint, vitest, no E2E) - `nx g @nx/react:app packages/app --bundler=vite`
+- [Setup Tailwind](https://tailwindcss.com/docs/installation/using-vite)

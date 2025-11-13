@@ -1,25 +1,26 @@
 /// <reference types='vitest' />
-import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
 
 export default defineConfig(() => ({
   root: __dirname,
-  cacheDir: '../../node_modules/.vite/packages/app',
+  cacheDir: "../../node_modules/.vite/packages/app",
   server: {
     port: 4200,
-    host: 'localhost'
+    host: "localhost"
   },
   preview: {
     port: 4200,
-    host: 'localhost'
+    host: "localhost"
   },
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   // Uncomment this if you are using workers.
   // worker: {
   //  plugins: [],
   // },
   build: {
-    outDir: './dist',
+    outDir: "./dist",
     emptyOutDir: true,
     reportCompressedSize: true,
     commonjsOptions: {
@@ -27,15 +28,15 @@ export default defineConfig(() => ({
     }
   },
   test: {
-    name: '@personia-crm/app',
+    name: "@personia-crm/app",
     watch: false,
     globals: true,
-    environment: 'jsdom',
-    include: ['{src,tests}/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-    reporters: ['default'],
+    environment: "jsdom",
+    include: ["{src,tests}/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+    reporters: ["default"],
     coverage: {
-      reportsDirectory: './test-output/vitest/coverage',
-      provider: 'v8' as const
+      reportsDirectory: "./test-output/vitest/coverage",
+      provider: "v8" as const
     }
   }
 }));
