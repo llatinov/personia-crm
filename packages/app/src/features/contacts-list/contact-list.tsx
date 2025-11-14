@@ -1,3 +1,4 @@
+import { Dialog } from "@capacitor/dialog";
 import { Card, CardContent, Input } from "@components/ui";
 import { useContacts } from "app/app/contacts-context";
 import { Search } from "lucide-react";
@@ -10,8 +11,13 @@ export function ContactList() {
 
   const displayedContacts = searchQuery ? searchContacts(searchQuery) : contacts;
 
-  const handleDelete = (id: string, name: string) => {
-    if (confirm(`Are you sure you want to delete ${name}?`)) {
+  const handleDelete = async (id: string, name: string) => {
+    const { value } = await Dialog.confirm({
+      title: "Confirm user deletion",
+      message: `Are you sure you want to delete ${name}?`
+    });
+
+    if (value) {
       deleteContact(id);
     }
   };

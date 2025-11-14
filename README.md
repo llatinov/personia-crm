@@ -28,3 +28,4 @@ The monorepo was created mainly with the following commands:
   - Install and configure [Vite and Tailwind](https://tailwindcss.com/docs/installation/using-vite) in components library - `cd packages/components && npm install tailwindcss @tailwindcss/vite --save && cd ../..` (workaround for not possible to have shadcn/ui + Vite + Tailwind 4 + NX)
   - Init shadcn/ui - `npx shadcn@latest init --cwd packages/components`
   - Add component - `npx shadcn@latest add --cwd packages/components button`
+- [Install Capacitor](https://capacitorjs.com/docs/getting-started), add Android and move to `packages` folder, [install plugins](https://capacitorjs.com/docs/apis)

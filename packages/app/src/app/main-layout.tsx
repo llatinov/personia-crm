@@ -5,7 +5,9 @@ export default function MainLayout() {
   return (
     <div>
       <Header />
-      <Outlet />
+      <div className="container mx-auto px-2 py-1 sm:px-6 sm:py-4">
+        <Outlet />
+      </div>
     </div>
   );
 }

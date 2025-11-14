@@ -1,3 +1,4 @@
+import { Dialog } from "@capacitor/dialog";
 import {
   Button,
   Card,
@@ -27,11 +28,14 @@ export function ContactForm() {
     notes: ""
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.name || !formData.email || !formData.phone) {
-      alert("Please fill in all required fields");
+    if (!formData.name) {
+      await Dialog.alert({
+        title: "Required fields missing",
+        message: "Please fill in all required fields"
+      });
       return;
     }
 
@@ -69,9 +73,7 @@ export function ContactForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">
-              Email <span className="text-destructive">*</span>
-            </Label>
+            <Label htmlFor="email">Email</Label>
             <Input
               id="email"
               name="email"
@@ -84,9 +86,7 @@ export function ContactForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone">
-              Phone <span className="text-destructive">*</span>
-            </Label>
+            <Label htmlFor="phone">Phone</Label>
             <Input
               id="phone"
               name="phone"
