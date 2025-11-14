@@ -11,6 +11,10 @@ This is monorepo for the Personia CRM project created and managed by Nx.
 `npm run test` - test all projects
 `npx nx format:write` - auto-format files
 
+## How to
+
+Package resolution is configured in `paths` in tsconfig.base.json and then resolved by `nxViteTsPaths` in vite.config.ts.
+
 ## History
 
 The monorepo was created mainly with the following commands:

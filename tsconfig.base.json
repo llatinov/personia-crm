@@ -21,7 +21,8 @@
     "baseUrl": ".",
     "paths": {
       "@components/ui/index.css": ["packages/components/src/index.css"],
-      "@components/ui": ["packages/components/src/index.ts"]
+      "@components/ui": ["packages/components/src/index.ts"],
+      "app/*": ["packages/app/src/*"]
     }
   }
 }
