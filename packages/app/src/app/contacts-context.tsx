@@ -1,20 +1,9 @@
+import { Contact } from "app/types/contacts";
 import React, { createContext, useContext, useEffect, useState } from "react";
-
-export interface Contact {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  company?: string;
-  jobTitle?: string;
-  address?: string;
-  notes?: string;
-  createdAt: Date;
-}
 
 interface ContactsContextType {
   contacts: Contact[];
-  addContact: (contact: Omit<Contact, "id" | "createdAt">) => void;
+  addContact: (contact: Contact) => void;
   updateContact: (id: string, contact: Partial<Contact>) => void;
   deleteContact: (id: string) => void;
   searchContacts: (query: string) => Contact[];
@@ -45,9 +34,10 @@ export function ContactsProvider({ children }: { children: React.ReactNode }) {
     }
   }, [contacts, isLoaded]);
 
-  const addContact = (contact: Omit<Contact, "id" | "createdAt">) => {
+  const addContact = (contact: Contact) => {
     const newContact: Contact = {
       ...contact,
+      name: contact.name as string,
       id: crypto.randomUUID(),
       createdAt: new Date()
     };
@@ -55,7 +45,17 @@ export function ContactsProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateContact = (id: string, updatedContact: Partial<Contact>) => {
-    setContacts((prev) => prev.map((contact) => (contact.id === id ? { ...contact, ...updatedContact } : contact)));
+    setContacts((prev) =>
+      prev.map((contact) =>
+        contact.id === id
+          ? {
+              ...contact,
+              ...updatedContact,
+              name: updatedContact.name as string
+            }
+          : contact
+      )
+    );
   };
 
   const deleteContact = (id: string) => {
@@ -66,15 +66,16 @@ export function ContactsProvider({ children }: { children: React.ReactNode }) {
     if (!query.trim()) return contacts;
 
     const lowerQuery = query.toLowerCase();
-    return contacts.filter(
-      (contact) =>
-        contact.name.toLowerCase().includes(lowerQuery) ||
-        contact.email.toLowerCase().includes(lowerQuery) ||
-        contact.phone.toLowerCase().includes(lowerQuery) ||
-        contact.company?.toLowerCase().includes(lowerQuery) ||
-        contact.jobTitle?.toLowerCase().includes(lowerQuery) ||
-        contact.notes?.toLowerCase().includes(lowerQuery)
-    );
+    return contacts.filter((contact) => {
+      // Search through all string attributes
+      return Object.entries(contact).some(([key, value]) => {
+        if (key === "id" || key === "createdAt") return false;
+        if (typeof value === "string") {
+          return value.toLowerCase().includes(lowerQuery);
+        }
+        return false;
+      });
+    });
   };
 
   return (
