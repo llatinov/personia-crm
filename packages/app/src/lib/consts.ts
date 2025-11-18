@@ -5,7 +5,7 @@ export enum Paths {
   USER_LOGIN = "/login",
   ADD_CONTACT = "/add"
 }
-export const DEFAULT_ICON = "📝";
+export const NotesIcon = "📝";
 
 export const CONTACT_ATTRIBUTES: Record<string, ContactAttributeDefinition> = {
   email: {
