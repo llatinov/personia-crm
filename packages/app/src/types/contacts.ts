@@ -5,10 +5,19 @@ export enum ContactAttributeCategory {
   Custom = "Custom"
 }
 
+export enum ContactAttributeInputType {
+  Text = "text",
+  Email = "email",
+  Tel = "tel",
+  Date = "date"
+}
+
 export interface Contact {
   id: string;
   name: string;
-  description?: string;
+  meetDate?: string;
+  meetLocation?: string;
+  notes?: string;
   createdAt: Date;
   attributes: ContactAttribute[];
 }
@@ -18,6 +27,7 @@ export interface ContactAttributeDefinition {
   name: string;
   icon: string;
   category: ContactAttributeCategory;
+  inputType: ContactAttributeInputType;
 }
 
 export interface ContactAttribute {

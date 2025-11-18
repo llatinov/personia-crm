@@ -1,5 +1,5 @@
 import { Button, Input, Label, Textarea, X } from "@components/ui";
-import { CONTACT_ATTRIBUTES, NotesIcon } from "app/lib/consts";
+import { CONTACT_ATTRIBUTES, CustomContactAttributeIcon } from "app/lib/consts";
 import { ContactAttribute } from "app/types/contacts";
 import { useEffect, useRef, useState } from "react";
 
@@ -15,8 +15,9 @@ export function AttributeField(props: Props) {
   const [showNote, setShowNote] = useState(!!props.attribute.note);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const icon = definition?.icon || NotesIcon;
+  const icon = definition?.icon || CustomContactAttributeIcon;
   const displayName = definition?.name || props.attribute.fieldType;
+  const inputType = definition?.inputType || "text";
 
   useEffect(() => {
     if (props.focus && inputRef.current) {
@@ -51,7 +52,7 @@ export function AttributeField(props: Props) {
 
       <Input
         ref={inputRef}
-        type="text"
+        type={inputType}
         value={props.attribute.value}
         onChange={(e) => props.onUpdate(props.attribute.id, { value: e.target.value })}
         placeholder={displayName}

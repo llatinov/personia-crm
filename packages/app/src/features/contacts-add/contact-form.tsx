@@ -3,9 +3,6 @@ import {
   Button,
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
   Input,
   Label,
   Plus,
@@ -17,7 +14,7 @@ import {
   Textarea
 } from "@components/ui";
 import { useContacts } from "app/app/contacts-context";
-import { CONTACT_ATTRIBUTES, Paths } from "app/lib/consts";
+import { CONTACT_ATTRIBUTES, CustomContactAttributeId, Paths } from "app/lib/consts";
 import { Contact, ContactAttribute, ContactAttributeCategory } from "app/types/contacts";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -27,11 +24,13 @@ export function ContactForm() {
   const navigate = useNavigate();
   const { addContact } = useContacts();
   const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+  const [meetDate, setMeetDate] = useState("");
+  const [meetLocation, setMeetLocation] = useState("");
+  const [notes, setNotes] = useState("");
   const [attributes, setAttributes] = useState<ContactAttribute[]>([]);
+  const [selectedField, setSelectedField] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [customFieldName, setCustomFieldName] = useState("");
-  const [selectedField, setSelectedField] = useState("");
   const [lastAddedAttributeId, setLastAddedAttributeId] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,7 +46,9 @@ export function ContactForm() {
 
     const contact = {
       name: name.trim(),
-      description: description.trim() || undefined,
+      meetDate: meetDate.trim() || undefined,
+      meetLocation: meetLocation.trim() || undefined,
+      notes: notes.trim() || undefined,
       attributes: [] as ContactAttribute[]
     } as Contact;
 
@@ -62,16 +63,15 @@ export function ContactForm() {
   };
 
   const handleAddAttribute = (fieldType: string) => {
-    const newAttributeId = crypto.randomUUID();
     const newAttribute: ContactAttribute = {
-      id: newAttributeId,
+      id: crypto.randomUUID(),
       fieldType,
       fieldCategory: CONTACT_ATTRIBUTES[fieldType]?.category || ContactAttributeCategory.Custom,
       value: ""
     };
     setAttributes((prev) => [...prev, newAttribute]);
     setSelectedField("");
-    setLastAddedAttributeId(newAttributeId);
+    setLastAddedAttributeId(newAttribute.id);
   };
 
   const handleUpdateAttribute = (id: string, updates: Partial<ContactAttribute>) => {
@@ -82,25 +82,26 @@ export function ContactForm() {
     setAttributes((prev) => prev.filter((attr) => attr.id !== id));
   };
 
+  const closeCustomInput = () => {
+    setSelectedField("");
+    setShowCustomInput(false);
+    setCustomFieldName("");
+  };
+
   const handleAddCustomField = () => {
     if (customFieldName.trim()) {
       handleAddAttribute(customFieldName.trim());
-      setCustomFieldName("");
-      setShowCustomInput(false);
+      closeCustomInput();
     }
   };
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Add New Contact</CardTitle>
-        <CardDescription>Name is required, other attributes are optional</CardDescription>
-      </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-2 sm:space-y-4">
-          <div className="space-y-1 sm:space-y-2">
+          <div className="space-y-2">
             <Label htmlFor="name">
-              Name <span className="text-destructive">*</span>
+              What is you contact's name? <span className="text-destructive">*</span>
             </Label>
             <Input
               id="name"
@@ -112,13 +113,35 @@ export function ContactForm() {
             />
           </div>
 
-          <div className="space-y-1 sm:space-y-2">
-            <Label htmlFor="description">Description</Label>
+          <div className="space-y-2">
+            <Label htmlFor="meetDate">When did you meet?</Label>
+            <Input
+              id="meetDate"
+              name="meetDate"
+              type="date"
+              value={meetDate}
+              onChange={(e) => setMeetDate(e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="meetLocation">Where did you meet?</Label>
+            <Input
+              id="meetLocation"
+              name="meetLocation"
+              value={meetLocation}
+              onChange={(e) => setMeetLocation(e.target.value)}
+              placeholder="e.g., Conference, Coffee shop, Online"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="notes">Write important details about your contact</Label>
             <Textarea
-              id="description"
-              name="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              id="notes"
+              name="notes"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
               placeholder="Add notes about this contact..."
             />
           </div>
@@ -149,8 +172,7 @@ export function ContactForm() {
                       e.preventDefault();
                       handleAddCustomField();
                     } else if (e.key === "Escape") {
-                      setShowCustomInput(false);
-                      setCustomFieldName("");
+                      closeCustomInput();
                     }
                   }}
                   autoFocus
@@ -158,61 +180,52 @@ export function ContactForm() {
                 <Button type="button" onClick={handleAddCustomField} disabled={!customFieldName.trim()}>
                   Add
                 </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setShowCustomInput(false);
-                    setCustomFieldName("");
-                  }}
-                >
+                <Button type="button" variant="outline" onClick={closeCustomInput}>
                   Cancel
                 </Button>
               </div>
             ) : (
-              <div className="space-y-2">
-                <Select
-                  value={selectedField}
-                  onValueChange={(value) => {
-                    setSelectedField(value);
+              <Select
+                value={selectedField}
+                onValueChange={(value) => {
+                  setSelectedField(value);
+                  if (value === CustomContactAttributeId) {
+                    setShowCustomInput(true);
+                  } else {
                     handleAddAttribute(value);
-                  }}
-                >
-                  <SelectTrigger className="w-full">
-                    <div className="flex items-center gap-2">
-                      <Plus className="h-4 w-4" />
-                      <SelectValue placeholder="Add Info" />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.values(ContactAttributeCategory).map((category) => {
-                      const categoryAttrs = Object.entries(CONTACT_ATTRIBUTES).filter(
-                        ([_, def]) => def.category === category
-                      );
+                  }
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <div className="flex items-center gap-2">
+                    <Plus className="h-4 w-4" />
+                    <SelectValue placeholder="Add Info" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.values(ContactAttributeCategory).map((category) => {
+                    const categoryAttrs = Object.entries(CONTACT_ATTRIBUTES).filter(
+                      ([_, def]) => def.category === category
+                    );
 
-                      if (categoryAttrs.length === 0) return null;
+                    if (categoryAttrs.length === 0) return null;
 
-                      return (
-                        <div key={category}>
-                          <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">{category}</div>
-                          {categoryAttrs.map(([id, def]) => (
-                            <SelectItem key={id} value={id}>
-                              <span className="flex items-center gap-2">
-                                <span>{def.icon}</span>
-                                <span>{def.name}</span>
-                              </span>
-                            </SelectItem>
-                          ))}
-                        </div>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-
-                <Button type="button" variant="outline" className="w-full" onClick={() => setShowCustomInput(true)}>
-                  Or add custom info
-                </Button>
-              </div>
+                    return (
+                      <div key={category}>
+                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">{category}</div>
+                        {categoryAttrs.map(([id, def]) => (
+                          <SelectItem key={id} value={id}>
+                            <span className="flex items-center gap-2">
+                              <span>{def.icon}</span>
+                              <span>{def.name}</span>
+                            </span>
+                          </SelectItem>
+                        ))}
+                      </div>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
             )}
           </div>
 
