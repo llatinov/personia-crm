@@ -1,8 +1,15 @@
 import { Paths } from "app/lib/consts";
 import { Users } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { ThemeSwitcher } from "../themes/theme-switcher";
 
 export function Header() {
+  const location = useLocation();
+
+  const getClass = (path: string) => {
+    const base = "text-sm font-medium transition-colors hover:text-primary";
+    return location.pathname === path ? base : `${base} text-muted-foreground`;
+  };
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container flex h-14 max-w-screen-2xl items-center px-4 sm:px-6">
@@ -13,16 +20,13 @@ export function Header() {
           </Link>
         </div>
         <nav className="flex flex-1 items-center space-x-4 sm:space-x-6">
-          <Link to={Paths.HOME} className="text-sm font-medium transition-colors hover:text-primary">
+          <Link to={Paths.HOME} className={getClass(Paths.HOME)}>
             Contacts
           </Link>
-          <Link
-            to={Paths.ADD_CONTACT}
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-          >
-            Add Contact
-          </Link>
         </nav>
+        <div className="flex items-center">
+          <ThemeSwitcher />
+        </div>
       </div>
     </header>
   );

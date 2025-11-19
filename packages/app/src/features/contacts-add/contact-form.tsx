@@ -1,8 +1,6 @@
 import { Dialog } from "@capacitor/dialog";
 import {
   Button,
-  Card,
-  CardContent,
   Input,
   Label,
   Plus,
@@ -103,155 +101,153 @@ export function ContactForm() {
   };
 
   return (
-    <Card>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-2 sm:space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">
-              What is you contact's name? <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="name"
-              name="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="John Doe"
-              required
-            />
+    <div>
+      <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-5">
+        <div className="space-y-3">
+          <Label htmlFor="name">
+            What is you contact's name? <span className="text-destructive">*</span>
+          </Label>
+          <Input
+            id="name"
+            name="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="John Doe"
+            required
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="meetDate">When did you meet?</Label>
+          <Input
+            id="meetDate"
+            name="meetDate"
+            type="date"
+            value={meetDate}
+            onChange={(e) => setMeetDate(e.target.value)}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="meetLocation">Where did you meet?</Label>
+          <Input
+            id="meetLocation"
+            name="meetLocation"
+            value={meetLocation}
+            onChange={(e) => setMeetLocation(e.target.value)}
+            placeholder="e.g., Conference, Coffee shop, Online"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="notes">Write important details about your contact</Label>
+          <Textarea
+            id="notes"
+            name="notes"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Add notes about this contact..."
+          />
+        </div>
+
+        {attributes.length > 0 && (
+          <div className="space-y-1 sm:space-y-3">
+            {attributes.map((attribute) => (
+              <AttributeField
+                key={attribute.id}
+                attribute={attribute}
+                onUpdate={handleUpdateAttribute}
+                onRemove={handleRemoveAttribute}
+                focus={attribute.id === lastAddedAttributeId}
+              />
+            ))}
           </div>
+        )}
 
-          <div className="space-y-2">
-            <Label htmlFor="meetDate">When did you meet?</Label>
-            <Input
-              id="meetDate"
-              name="meetDate"
-              type="date"
-              value={meetDate}
-              onChange={(e) => setMeetDate(e.target.value)}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="meetLocation">Where did you meet?</Label>
-            <Input
-              id="meetLocation"
-              name="meetLocation"
-              value={meetLocation}
-              onChange={(e) => setMeetLocation(e.target.value)}
-              placeholder="e.g., Conference, Coffee shop, Online"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="notes">Write important details about your contact</Label>
-            <Textarea
-              id="notes"
-              name="notes"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Add notes about this contact..."
-            />
-          </div>
-
-          {attributes.length > 0 && (
-            <div className="space-y-1 sm:space-y-3">
-              {attributes.map((attribute) => (
-                <AttributeField
-                  key={attribute.id}
-                  attribute={attribute}
-                  onUpdate={handleUpdateAttribute}
-                  onRemove={handleRemoveAttribute}
-                  focus={attribute.id === lastAddedAttributeId}
-                />
-              ))}
-            </div>
-          )}
-
-          <div className="space-y-3 pt-2">
-            {showCustomInput ? (
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Enter custom info name..."
-                  value={customFieldName}
-                  onChange={(e) => setCustomFieldName(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleAddCustomField();
-                    } else if (e.key === "Escape") {
-                      closeCustomInput();
-                    }
-                  }}
-                  autoFocus
-                />
-                <Button type="button" onClick={handleAddCustomField} disabled={!customFieldName.trim()}>
-                  Add
-                </Button>
-                <Button type="button" variant="outline" onClick={closeCustomInput}>
-                  Cancel
-                </Button>
-              </div>
-            ) : (
-              <Select
-                value={selectedField}
-                onValueChange={(value) => {
-                  setSelectedField(value);
-                  if (value === CustomContactAttributeId) {
-                    setShowCustomInput(true);
-                  } else {
-                    handleAddAttribute(value);
+        <div className="space-y-3 pt-2">
+          {showCustomInput ? (
+            <div className="flex gap-2">
+              <Input
+                placeholder="Enter custom info name..."
+                value={customFieldName}
+                onChange={(e) => setCustomFieldName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleAddCustomField();
+                  } else if (e.key === "Escape") {
+                    closeCustomInput();
                   }
                 }}
-              >
-                <SelectTrigger className="w-full">
-                  <div className="flex items-center gap-2">
-                    <Plus className="h-4 w-4" />
-                    <SelectValue placeholder="Add Info" />
-                  </div>
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.values(ContactAttributeCategory).map((category) => {
-                    const categoryAttrs = Object.entries(CONTACT_ATTRIBUTES).filter(
-                      ([_, def]) => def.category === category
-                    );
-
-                    if (categoryAttrs.length === 0) return null;
-
-                    return (
-                      <div key={category}>
-                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">{category}</div>
-                        {categoryAttrs.map(([id, def]) => (
-                          <SelectItem key={id} value={id}>
-                            <span className="flex items-center gap-2">
-                              <span>{def.icon}</span>
-                              <span>{def.name}</span>
-                            </span>
-                          </SelectItem>
-                        ))}
-                      </div>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
-            )}
-          </div>
-
-          <div className="flex gap-4 pt-4">
-            <Button type="submit" className="flex-1" disabled={isLoading}>
-              {isLoading ? "Adding Contact..." : "Add Contact"}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => navigate(Paths.HOME)}
-              className="flex-1"
-              disabled={isLoading}
+                autoFocus
+              />
+              <Button type="button" onClick={handleAddCustomField} disabled={!customFieldName.trim()}>
+                Add
+              </Button>
+              <Button type="button" variant="outline" onClick={closeCustomInput}>
+                Cancel
+              </Button>
+            </div>
+          ) : (
+            <Select
+              value={selectedField}
+              onValueChange={(value) => {
+                setSelectedField(value);
+                if (value === CustomContactAttributeId) {
+                  setShowCustomInput(true);
+                } else {
+                  handleAddAttribute(value);
+                }
+              }}
             >
-              Cancel
-            </Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+              <SelectTrigger className="w-full">
+                <div className="flex items-center gap-2">
+                  <Plus className="h-4 w-4" />
+                  <SelectValue placeholder="Add Info" />
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                {Object.values(ContactAttributeCategory).map((category) => {
+                  const categoryAttrs = Object.entries(CONTACT_ATTRIBUTES).filter(
+                    ([_, def]) => def.category === category
+                  );
+
+                  if (categoryAttrs.length === 0) return null;
+
+                  return (
+                    <div key={category}>
+                      <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">{category}</div>
+                      {categoryAttrs.map(([id, def]) => (
+                        <SelectItem key={id} value={id}>
+                          <span className="flex items-center gap-2">
+                            <span>{def.icon}</span>
+                            <span>{def.name}</span>
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </div>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+          )}
+        </div>
+
+        <div className="flex gap-4 pt-4">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => navigate(Paths.HOME)}
+            className="flex-1"
+            disabled={isLoading}
+          >
+            Cancel
+          </Button>
+          <Button type="submit" className="flex-1" disabled={isLoading}>
+            {isLoading ? "Adding Contact..." : "Add Contact"}
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 }
