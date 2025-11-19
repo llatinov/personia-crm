@@ -60,8 +60,11 @@ export class API {
   async createContact(contact: Contact): Promise<void> {
     await this.delay();
 
-    // if (this.shouldSimulateError()) {
-    throw new Error("Failed to create contact. Please try again.");
+    if (this.shouldSimulateError()) {
+      throw new Error("Failed to create contact. Please try again.");
+    }
+
+    contactsRepository.add(contact);
   }
 
   /**
