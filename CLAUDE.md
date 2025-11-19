@@ -10,3 +10,8 @@
 - Replace `import { cn } from "@components/ui/lib/utils"` with `import { cn } from "../../lib/utils";`.
 - Exported in `packages\components\src\index.ts`.
 - Auto-format the code.
+
+## Adding new React component
+
+- Register properties with `interface Props{}`
+- Component has the following structure `export function COMPONENT_NAME(props: Props)`

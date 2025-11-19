@@ -36,17 +36,17 @@ export function AttributeField(props: Props) {
     <div className="border rounded-lg p-2 sm:p-4 space-y-1 sm:space-y-3 bg-card">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1">
-          <span className="text-lg">{icon}</span>
-          <span className="font-medium">{displayName}</span>
+          <span>{icon}</span>
+          <span className="text-sm font-medium">{displayName}</span>
         </div>
         <Button
           type="button"
           variant="ghost"
           size="sm"
           onClick={() => props.onRemove(props.attribute.id)}
-          className="h-8 w-8 p-0"
+          className="h-6 w-6 p-0"
         >
-          <X className="h-4 w-4" />
+          <X className="h-3 w-3" />
         </Button>
       </div>
 

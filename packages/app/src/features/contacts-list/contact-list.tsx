@@ -1,24 +1,22 @@
-import { Dialog } from "@capacitor/dialog";
 import { Card, CardContent, Input } from "@components/ui";
 import { useContacts } from "app/app/contacts-context";
+import { Contact } from "app/types/contacts";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import { ContactCard } from "./contact-card";
+import { DeleteContactModal } from "./delete-contact-modal";
 
 export function ContactList() {
   const { contacts, searchContacts, deleteContact } = useContacts();
   const [searchQuery, setSearchQuery] = useState("");
+  const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
 
   const displayedContacts = searchQuery ? searchContacts(searchQuery) : contacts;
 
-  const handleDelete = async (id: string, name: string) => {
-    const { value } = await Dialog.confirm({
-      title: "Confirm user deletion",
-      message: `Are you sure you want to delete ${name}?`
-    });
-
-    if (value) {
-      deleteContact(id);
+  const handleDelete = () => {
+    if (contactToDelete) {
+      deleteContact(contactToDelete.id);
+      setContactToDelete(null);
     }
   };
 
@@ -48,10 +46,16 @@ export function ContactList() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-3">
           {displayedContacts.map((contact) => (
-            <ContactCard key={contact.id} contact={contact} onDelete={handleDelete} />
+            <ContactCard key={contact.id} contact={contact} onDelete={() => setContactToDelete(contact)} />
           ))}
         </div>
       )}
+
+      <DeleteContactModal
+        contact={contactToDelete}
+        onOpenChange={() => setContactToDelete(null)}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }
