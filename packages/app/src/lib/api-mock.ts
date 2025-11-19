@@ -1,12 +1,6 @@
 import type { Contact } from "app/types/contacts";
 import { contactsRepository } from "./repository-contacts";
 
-export interface ApiResponse<T> {
-  data?: T;
-  error?: string;
-  success: boolean;
-}
-
 export class API {
   private static instance: API;
   private simulateDelay: number = 300; // milliseconds
@@ -50,181 +44,37 @@ export class API {
   /**
    * Get all contacts
    */
-  async getContacts(): Promise<ApiResponse<Contact[]>> {
+  async getContacts(): Promise<Contact[]> {
     await this.delay();
 
     if (this.shouldSimulateError()) {
-      return {
-        success: false,
-        error: "Failed to fetch contacts. Please try again."
-      };
+      throw new Error("Failed to fetch contacts. Please try again.");
     }
 
-    try {
-      const contacts = contactsRepository.getAll();
-      return {
-        success: true,
-        data: contacts
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred"
-      };
-    }
-  }
-
-  /**
-   * Get a single contact by ID
-   */
-  async getContact(id: string): Promise<ApiResponse<Contact>> {
-    await this.delay();
-
-    if (this.shouldSimulateError()) {
-      return {
-        success: false,
-        error: "Failed to fetch contact. Please try again."
-      };
-    }
-
-    try {
-      const contact = contactsRepository.getById(id);
-      if (!contact) {
-        return {
-          success: false,
-          error: "Contact not found"
-        };
-      }
-      return {
-        success: true,
-        data: contact
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred"
-      };
-    }
+    return contactsRepository.getAll();
   }
 
   /**
    * Create a new contact
    */
-  async createContact(contact: Contact): Promise<ApiResponse<Contact>> {
+  async createContact(contact: Contact): Promise<void> {
     await this.delay();
 
-    if (this.shouldSimulateError()) {
-      return {
-        success: false,
-        error: "Failed to create contact. Please try again."
-      };
-    }
-
-    try {
-      const newContact = contactsRepository.add(contact);
-      return {
-        success: true,
-        data: newContact
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred"
-      };
-    }
-  }
-
-  /**
-   * Update an existing contact
-   */
-  async updateContact(id: string, contact: Partial<Contact>): Promise<ApiResponse<Contact>> {
-    await this.delay();
-
-    if (this.shouldSimulateError()) {
-      return {
-        success: false,
-        error: "Failed to update contact. Please try again."
-      };
-    }
-
-    try {
-      const updated = contactsRepository.update(id, contact);
-      if (!updated) {
-        return {
-          success: false,
-          error: "Contact not found"
-        };
-      }
-      const updatedContact = contactsRepository.getById(id);
-      return {
-        success: true,
-        data: updatedContact!
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred"
-      };
-    }
+    // if (this.shouldSimulateError()) {
+    throw new Error("Failed to create contact. Please try again.");
   }
 
   /**
    * Delete a contact
    */
-  async deleteContact(id: string): Promise<ApiResponse<void>> {
+  async deleteContact(id: string): Promise<void> {
     await this.delay();
 
     if (this.shouldSimulateError()) {
-      return {
-        success: false,
-        error: "Failed to delete contact. Please try again."
-      };
+      throw new Error("Failed to delete contact. Please try again.");
     }
 
-    try {
-      const deleted = contactsRepository.delete(id);
-      if (!deleted) {
-        return {
-          success: false,
-          error: "Contact not found"
-        };
-      }
-      return {
-        success: true
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred"
-      };
-    }
-  }
-
-  /**
-   * Search contacts
-   */
-  async searchContacts(query: string): Promise<ApiResponse<Contact[]>> {
-    await this.delay();
-
-    if (this.shouldSimulateError()) {
-      return {
-        success: false,
-        error: "Failed to search contacts. Please try again."
-      };
-    }
-
-    try {
-      const contacts = contactsRepository.search(query);
-      return {
-        success: true,
-        data: contacts
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred"
-      };
-    }
+    contactsRepository.delete(id);
   }
 }
 

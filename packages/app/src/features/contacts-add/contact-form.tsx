@@ -13,7 +13,7 @@ import {
   SelectValue,
   Textarea
 } from "@components/ui";
-import { useApi } from "app/hooks/use-api";
+import { apiMock } from "app/lib/api-mock";
 import { CONTACT_ATTRIBUTES, CustomContactAttributeId, Paths } from "app/lib/consts";
 import { Contact, ContactAttribute, ContactAttributeCategory } from "app/types/contacts";
 import { useState } from "react";
@@ -22,7 +22,6 @@ import { AttributeField } from "./attribute-field";
 
 export function ContactForm() {
   const navigate = useNavigate();
-  const api = useApi();
   const [name, setName] = useState("");
   const [meetDate, setMeetDate] = useState("");
   const [meetLocation, setMeetLocation] = useState("");
@@ -32,6 +31,7 @@ export function ContactForm() {
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [customFieldName, setCustomFieldName] = useState("");
   const [lastAddedAttributeId, setLastAddedAttributeId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,11 +58,15 @@ export function ContactForm() {
       }
     });
 
-    const response = await api.createContact(contact);
-
-    if (response.success) {
-      navigate(Paths.HOME);
+    try {
+      setIsLoading(true);
+      await apiMock.createContact(contact);
+    } catch {
+    } finally {
+      setIsLoading(false);
     }
+
+    navigate(Paths.HOME);
   };
 
   const handleAddAttribute = (fieldType: string) => {
@@ -233,10 +237,16 @@ export function ContactForm() {
           </div>
 
           <div className="flex gap-4 pt-4">
-            <Button type="submit" className="flex-1">
-              Add Contact
+            <Button type="submit" className="flex-1" disabled={isLoading}>
+              {isLoading ? "Adding Contact..." : "Add Contact"}
             </Button>
-            <Button type="button" variant="outline" onClick={() => navigate(Paths.HOME)} className="flex-1">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => navigate(Paths.HOME)}
+              className="flex-1"
+              disabled={isLoading}
+            >
               Cancel
             </Button>
           </div>

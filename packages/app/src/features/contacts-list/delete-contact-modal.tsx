@@ -21,8 +21,8 @@ export function DeleteContactModal(props: Props) {
   };
 
   const handleConfirm = () => {
-    props.onConfirm();
     closeModal();
+    props.onConfirm();
   };
 
   return (

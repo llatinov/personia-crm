@@ -1,5 +1,6 @@
 import { Card, CardContent, Input } from "@components/ui";
-import { useApi } from "app/hooks/use-api";
+import Loader from "app/components/loader/loader";
+import { apiMock } from "app/lib/api-mock";
 import { Contact } from "app/types/contacts";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -7,20 +8,23 @@ import { ContactCard } from "./contact-card";
 import { DeleteContactModal } from "./delete-contact-modal";
 
 export function ContactList() {
-  const api = useApi();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     loadContacts();
   }, []);
 
   const loadContacts = async () => {
-    const response = await api.getContacts();
-
-    if (response.success) {
-      setContacts(response.data || []);
+    try {
+      setIsLoading(true);
+      const response = await apiMock.getContacts();
+      setContacts(response || []);
+    } catch {
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -40,11 +44,13 @@ export function ContactList() {
   const handleDelete = async () => {
     if (!contactToDelete) return;
 
-    const response = await api.deleteContact(contactToDelete.id);
-
-    if (response.success) {
+    try {
+      setIsLoading(true);
+      await apiMock.deleteContact(contactToDelete.id);
       await loadContacts();
       setContactToDelete(null);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -61,7 +67,9 @@ export function ContactList() {
         />
       </div>
 
-      {displayedContacts.length === 0 ? (
+      {isLoading ? (
+        <Loader />
+      ) : displayedContacts.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <p className="text-muted-foreground text-center">

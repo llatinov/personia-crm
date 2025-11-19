@@ -1,40 +1,40 @@
-import { Button, Card, CardContent, CardFooter, CardHeader, CardTitle } from "@components/ui";
-import { uiSetError, useAppContext } from "app/lib/app-context";
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from "@components/ui";
 import { Paths } from "app/lib/consts";
 
 interface Props {
   reload?: boolean;
+  onClose: () => void;
 }
 
 export function ErrorOverlay(props: Props) {
-  const [state, dispatch] = useAppContext();
-
-  if (!state.hasError) {
-    return null;
-  }
-
-  const handleClose = () => {
-    uiSetError(dispatch, false);
+  const closeModal = () => {
+    props.onClose();
     if (props.reload) {
       window.location.href = Paths.HOME;
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <Card className="w-full max-w-md mx-4">
-        <CardHeader>
-          <CardTitle>Unexpected error</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">
+    <Dialog open onOpenChange={closeModal}>
+      <DialogContent onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={closeModal}>
+        <DialogHeader>
+          <DialogTitle>Unexpected error</DialogTitle>
+          <DialogDescription>
             An unexpected error occurred. Please try again. If the error persists, please contact support.
-          </p>
-        </CardContent>
-        <CardFooter className="flex justify-end">
-          <Button onClick={handleClose}>Close</Button>
-        </CardFooter>
-      </Card>
-    </div>
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button onClick={closeModal}>Close</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
