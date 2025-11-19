@@ -16,14 +16,18 @@ interface Props {
 }
 
 export function DeleteContactModal(props: Props) {
+  const closeModal = () => {
+    props.onOpenChange(false);
+  };
+
   const handleConfirm = () => {
     props.onConfirm();
-    props.onOpenChange(false);
+    closeModal();
   };
 
   return (
     <Dialog open={!!props.contact} onOpenChange={props.onOpenChange}>
-      <DialogContent onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={() => props.onOpenChange(false)}>
+      <DialogContent onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={closeModal}>
         <DialogHeader>
           <DialogTitle>Delete Contact</DialogTitle>
           <DialogDescription>
@@ -31,7 +35,7 @@ export function DeleteContactModal(props: Props) {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button type="button" variant="outline" onClick={() => props.onOpenChange(false)}>
+          <Button type="button" variant="outline" onClick={closeModal}>
             Cancel
           </Button>
           <Button type="button" variant="destructive" onClick={handleConfirm}>

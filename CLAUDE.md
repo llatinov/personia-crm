@@ -15,3 +15,7 @@
 
 - Register properties with `interface Props{}`
 - Component has the following structure `export function COMPONENT_NAME(props: Props)`
+
+## Adding new library, class or functionality
+
+- Do not create index.ts file that exports the new functionality

@@ -1,21 +1,49 @@
 import { Card, CardContent, Input } from "@components/ui";
-import { useContacts } from "app/app/contacts-context";
+import { useApi } from "app/hooks/use-api";
 import { Contact } from "app/types/contacts";
 import { Search } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ContactCard } from "./contact-card";
 import { DeleteContactModal } from "./delete-contact-modal";
 
 export function ContactList() {
-  const { contacts, searchContacts, deleteContact } = useContacts();
+  const api = useApi();
+  const [contacts, setContacts] = useState<Contact[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
 
-  const displayedContacts = searchQuery ? searchContacts(searchQuery) : contacts;
+  useEffect(() => {
+    loadContacts();
+  }, []);
 
-  const handleDelete = () => {
-    if (contactToDelete) {
-      deleteContact(contactToDelete.id);
+  const loadContacts = async () => {
+    const response = await api.getContacts();
+
+    if (response.success) {
+      setContacts(response.data || []);
+    }
+  };
+
+  const displayedContacts = searchQuery
+    ? contacts.filter((contact) => {
+        const lowerQuery = searchQuery.toLowerCase();
+        return Object.entries(contact).some(([key, value]) => {
+          if (key === "id" || key === "createdAt") return false;
+          if (typeof value === "string") {
+            return value.toLowerCase().includes(lowerQuery);
+          }
+          return false;
+        });
+      })
+    : contacts;
+
+  const handleDelete = async () => {
+    if (!contactToDelete) return;
+
+    const response = await api.deleteContact(contactToDelete.id);
+
+    if (response.success) {
+      await loadContacts();
       setContactToDelete(null);
     }
   };

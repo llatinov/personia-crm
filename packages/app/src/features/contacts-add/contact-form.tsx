@@ -13,7 +13,7 @@ import {
   SelectValue,
   Textarea
 } from "@components/ui";
-import { useContacts } from "app/app/contacts-context";
+import { useApi } from "app/hooks/use-api";
 import { CONTACT_ATTRIBUTES, CustomContactAttributeId, Paths } from "app/lib/consts";
 import { Contact, ContactAttribute, ContactAttributeCategory } from "app/types/contacts";
 import { useState } from "react";
@@ -22,7 +22,7 @@ import { AttributeField } from "./attribute-field";
 
 export function ContactForm() {
   const navigate = useNavigate();
-  const { addContact } = useContacts();
+  const api = useApi();
   const [name, setName] = useState("");
   const [meetDate, setMeetDate] = useState("");
   const [meetLocation, setMeetLocation] = useState("");
@@ -58,8 +58,11 @@ export function ContactForm() {
       }
     });
 
-    addContact(contact);
-    navigate(Paths.HOME);
+    const response = await api.createContact(contact);
+
+    if (response.success) {
+      navigate(Paths.HOME);
+    }
   };
 
   const handleAddAttribute = (fieldType: string) => {
