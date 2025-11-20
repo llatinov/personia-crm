@@ -1,36 +1,36 @@
 import { Input } from "@components/ui";
 import { InfoCard } from "app/components/info-card/info-card";
 import { Loader } from "app/components/loader/loader";
-import { Contact } from "app/types/contacts";
+import { Event } from "app/types/events";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
-import { apiMockContacts } from "../api-mock";
-import { ContactCard } from "./contact-card";
+import { apiMockEvents } from "../api-mock";
+import { EventCard } from "./event-card";
 
-export function ContactList() {
-  const [contacts, setContacts] = useState<Contact[]>([]);
+export function EventList() {
+  const [events, setEvents] = useState<Event[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    loadContacts();
+    loadEvents();
   }, []);
 
-  const loadContacts = async () => {
+  const loadEvents = async () => {
     try {
       setIsLoading(true);
-      const response = await apiMockContacts.getContacts();
-      setContacts(response || []);
+      const response = await apiMockEvents.getEvents();
+      setEvents(response || []);
     } catch {
     } finally {
       setIsLoading(false);
     }
   };
 
-  const displayedContacts = searchQuery
-    ? contacts.filter((contact) => {
+  const displayedEvents = searchQuery
+    ? events.filter((event) => {
         const lowerQuery = searchQuery.toLowerCase();
-        return Object.entries(contact).some(([key, value]) => {
+        return Object.entries(event).some(([key, value]) => {
           if (key === "id" || key === "createdAt") return false;
           if (typeof value === "string") {
             return value.toLowerCase().includes(lowerQuery);
@@ -38,7 +38,7 @@ export function ContactList() {
           return false;
         });
       })
-    : contacts;
+    : events;
 
   return (
     <div className="space-y-6 w-full">
@@ -46,7 +46,7 @@ export function ContactList() {
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           type="search"
-          placeholder="Search contacts by name, email, phone, company..."
+          placeholder="Search events by name, location..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="pl-10"
@@ -55,18 +55,16 @@ export function ContactList() {
 
       {isLoading ? (
         <Loader />
-      ) : displayedContacts.length === 0 ? (
+      ) : displayedEvents.length === 0 ? (
         <InfoCard
           message={
-            searchQuery
-              ? "No contacts found matching your search"
-              : "No contacts yet. Add your first contact to get started!"
+            searchQuery ? "No events found matching your search" : "No events yet. Add your first event to get started!"
           }
         />
       ) : (
         <div className="grid gap-4 sm:grid-cols-3">
-          {displayedContacts.map((contact) => (
-            <ContactCard key={contact.id} contact={contact} onContactDelete={async () => await loadContacts()} />
+          {displayedEvents.map((event) => (
+            <EventCard key={event.id} event={event} onEventDelete={async () => await loadEvents()} />
           ))}
         </div>
       )}

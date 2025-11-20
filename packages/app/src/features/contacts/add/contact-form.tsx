@@ -11,12 +11,12 @@ import {
   SelectValue,
   Textarea
 } from "@components/ui";
-import { apiMock } from "app/lib/api-mock";
 import { CONTACT_ATTRIBUTES, CustomContactAttributeId, Paths } from "app/lib/consts";
 import { newContactAttribute } from "app/lib/contacts";
 import { Contact, ContactAttribute, ContactAttributeCategory } from "app/types/contacts";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiMockContacts } from "../api-mock";
 import { AttributeField } from "./attribute-field";
 
 interface Props {
@@ -33,7 +33,7 @@ export function ContactForm(props: Props) {
   const [selectedField, setSelectedField] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [customFieldName, setCustomFieldName] = useState("");
-  const [lastAddedAttributeId, setLastAddedAttributeId] = useState<string | null>(null);
+  const [lastAddedAttributeId, setLastAddedAttributeId] = useState<string>();
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -73,7 +73,7 @@ export function ContactForm(props: Props) {
 
     try {
       setIsLoading(true);
-      const contactId = await apiMock.createContact(contact);
+      const contactId = await apiMockContacts.createContact(contact);
       navigate(Paths.CONTACTS_VIEW.replace(":contactId", contactId));
     } catch {
       navigate(Paths.CONTACTS);

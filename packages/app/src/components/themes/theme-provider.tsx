@@ -20,7 +20,7 @@ interface ThemeProviderState {
 
 const initialState: ThemeProviderState = {
   theme: Theme.LIGHT,
-  setTheme: () => null
+  setTheme: () => undefined
 };
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState);

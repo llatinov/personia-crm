@@ -1,5 +1,5 @@
-import type { Contact } from "app/types/contacts";
-import { contactsRepository } from "./repository-contacts";
+import type { Event } from "app/types/events";
+import { eventsRepository } from "./repository";
 
 export class API {
   private static instance: API;
@@ -42,56 +42,56 @@ export class API {
   }
 
   /**
-   * Get all contacts
+   * Get all events
    */
-  async getContacts(): Promise<Contact[]> {
+  async getEvents(): Promise<Event[]> {
     await this.delay();
 
     if (this.shouldSimulateError()) {
-      throw new Error("Failed to fetch contacts. Please try again.");
+      throw new Error("Failed to fetch events. Please try again.");
     }
 
-    return contactsRepository.getAll();
+    return eventsRepository.getAll();
   }
 
   /**
-   * Get a contact by ID
+   * Get an event by ID
    */
-  async getContactById(id: string): Promise<Contact | null> {
+  async getEventById(id: string): Promise<Event | undefined> {
     await this.delay();
 
     if (this.shouldSimulateError()) {
-      throw new Error("Failed to fetch contact. Please try again.");
+      throw new Error("Failed to fetch event. Please try again.");
     }
 
-    return contactsRepository.getById(id);
+    return eventsRepository.getById(id);
   }
 
   /**
-   * Create a new contact
+   * Create a new event
    */
-  async createContact(contact: Contact): Promise<string> {
+  async createEvent(event: Event): Promise<string> {
     await this.delay();
 
     if (this.shouldSimulateError()) {
-      throw new Error("Failed to create contact. Please try again.");
+      throw new Error("Failed to create event. Please try again.");
     }
 
-    return contactsRepository.add(contact).id;
+    return eventsRepository.add(event).id;
   }
 
   /**
-   * Delete a contact
+   * Delete an event
    */
-  async deleteContact(id: string): Promise<void> {
+  async deleteEvent(id: string): Promise<void> {
     await this.delay();
 
     if (this.shouldSimulateError()) {
-      throw new Error("Failed to delete contact. Please try again.");
+      throw new Error("Failed to delete event. Please try again.");
     }
 
-    contactsRepository.delete(id);
+    eventsRepository.delete(id);
   }
 }
 
-export const apiMock = API.getInstance();
+export const apiMockEvents = API.getInstance();

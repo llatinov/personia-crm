@@ -18,8 +18,8 @@ export interface Contact {
   meetDate?: string;
   meetLocation?: string;
   notes?: string;
-  createdAt: Date;
   attributes: ContactAttribute[];
+  createdAt: Date;
 }
 
 export interface ContactAttributeDefinition {

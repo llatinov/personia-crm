@@ -1,19 +1,19 @@
 import { Button } from "@components/ui";
 import { InfoCard } from "app/components/info-card/info-card";
 import { Loader } from "app/components/loader/loader";
-import { apiMock } from "app/lib/api-mock";
 import { Paths } from "app/lib/consts";
 import { Contact } from "app/types/contacts";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { DeleteContactButton } from "../delete/delete-contact-button";
+import { apiMockContacts } from "../api-mock";
 import { ContactCard } from "./contact-card";
+import { DeleteContactButton } from "./delete-contact-button";
 
 export function ViewContactPage() {
   const navigate = useNavigate();
   const { contactId } = useParams<{ contactId: string }>();
-  const [contact, setContact] = useState<Contact | null>(null);
+  const [contact, setContact] = useState<Contact>();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,7 +29,7 @@ export function ViewContactPage() {
 
     try {
       setIsLoading(true);
-      const result = await apiMock.getContactById(contactId);
+      const result = await apiMockContacts.getContactById(contactId);
       if (result) {
         setContact(result);
       } else {

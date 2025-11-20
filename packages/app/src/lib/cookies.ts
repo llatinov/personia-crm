@@ -5,7 +5,7 @@ export function setCookie(name: string, value: string, days: number) {
   document.cookie = `${name}=${value};${expires};path=/;SameSite=Strict`;
 }
 
-export function getCookie(name: string): string | null {
+export function getCookie(name: string): string | undefined {
   const nameEQ = `${name}=`;
   const cookies = document.cookie.split(";");
   for (let i = 0; i < cookies.length; i++) {
@@ -17,5 +17,5 @@ export function getCookie(name: string): string | null {
       return cookie.substring(nameEQ.length);
     }
   }
-  return null;
+  return undefined;
 }

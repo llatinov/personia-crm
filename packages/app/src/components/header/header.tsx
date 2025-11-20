@@ -23,6 +23,9 @@ export function Header() {
           <Link to={Paths.CONTACTS} className={getClass(Paths.CONTACTS)}>
             Contacts
           </Link>
+          <Link to={Paths.EVENTS} className={getClass(Paths.EVENTS)}>
+            Events
+          </Link>
         </nav>
         <div className="flex items-center">
           <ThemeSwitcher />

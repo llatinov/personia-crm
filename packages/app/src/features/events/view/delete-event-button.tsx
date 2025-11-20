@@ -1,31 +1,31 @@
 import { Button } from "@components/ui";
-import { Contact } from "app/types/contacts";
+import { Event } from "app/types/events";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
-import { apiMockContacts } from "../api-mock";
-import { DeleteContactModal } from "./delete-contact-modal";
+import { apiMockEvents } from "../api-mock";
+import { DeleteEventModal } from "./delete-event-modal";
 
 interface Props {
-  contact?: Contact;
+  event?: Event;
   onDelete: () => void;
 }
 
-export function DeleteContactButton(props: Props) {
-  const [contactToDelete, setContactToDelete] = useState<Contact>();
+export function DeleteEventButton(props: Props) {
+  const [eventToDelete, setEventToDelete] = useState<Event>();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setContactToDelete(props.contact);
+    setEventToDelete(props.event);
   };
 
   const handleDeleteConfirm = async () => {
-    if (!contactToDelete) return;
+    if (!eventToDelete) return;
 
     try {
       setIsLoading(true);
-      await apiMockContacts.deleteContact(contactToDelete.id);
-      setContactToDelete(undefined);
+      await apiMockEvents.deleteEvent(eventToDelete.id);
+      setEventToDelete(undefined);
       props.onDelete();
     } finally {
       setIsLoading(false);
@@ -33,7 +33,7 @@ export function DeleteContactButton(props: Props) {
   };
 
   return (
-    props.contact && (
+    props.event && (
       <>
         <Button
           variant="ghost"
@@ -44,10 +44,10 @@ export function DeleteContactButton(props: Props) {
           <Trash2 className="h-4 w-4" />
         </Button>
 
-        <DeleteContactModal
-          contact={contactToDelete}
+        <DeleteEventModal
+          event={eventToDelete}
           isLoading={isLoading}
-          onOpenChange={(open) => !open && setContactToDelete(undefined)}
+          onOpenChange={(open) => !open && setEventToDelete(undefined)}
           onConfirm={handleDeleteConfirm}
         />
       </>

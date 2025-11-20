@@ -7,16 +7,16 @@ import {
   DialogHeader,
   DialogTitle
 } from "@components/ui";
-import { Contact } from "app/types/contacts";
+import { Event } from "app/types/events";
 
 interface Props {
-  contact?: Contact;
+  event?: Event;
   isLoading: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
 }
 
-export function DeleteContactModal(props: Props) {
+export function DeleteEventModal(props: Props) {
   const closeModal = () => {
     props.onOpenChange(false);
   };
@@ -27,12 +27,12 @@ export function DeleteContactModal(props: Props) {
   };
 
   return (
-    <Dialog open={!!props.contact} onOpenChange={props.onOpenChange}>
+    <Dialog open={!!props.event} onOpenChange={props.onOpenChange}>
       <DialogContent onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={closeModal}>
         <DialogHeader>
-          <DialogTitle>Delete Contact</DialogTitle>
+          <DialogTitle>Delete Event</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete {props.contact?.name}? This action cannot be undone.
+            Are you sure you want to delete {props.event?.name}? This action cannot be undone.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>

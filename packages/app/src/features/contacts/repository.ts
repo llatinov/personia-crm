@@ -33,9 +33,9 @@ export class ContactsRepository {
     }
   }
 
-  getById(id: string): Contact | null {
+  getById(id: string): Contact | undefined {
     const contacts = this.getAll();
-    return contacts.find((contact) => contact.id === id) || null;
+    return contacts.find((contact) => contact.id === id);
   }
 
   add(contact: Contact): Contact {

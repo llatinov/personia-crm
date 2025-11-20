@@ -5,7 +5,10 @@ export enum Paths {
   USER_LOGIN = "/login",
   CONTACTS = "/contacts",
   CONTACTS_ADD = "/contacts/add",
-  CONTACTS_VIEW = "/contacts/:contactId"
+  CONTACTS_VIEW = "/contacts/:contactId",
+  EVENTS = "/events",
+  EVENTS_ADD = "/events/add",
+  EVENTS_VIEW = "/events/:eventId"
 }
 
 export const CustomContactAttributeId = "custom";
