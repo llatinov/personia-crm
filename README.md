@@ -9,6 +9,7 @@ This is monorepo for the Personia CRM project created and managed by Nx.
 `npm run dev` - run all app in one command
 `npm run lint` - lint all projects
 `npm run test` - test all projects
+`npm run analyze` - analyze bundle size
 `npx nx format:write` - auto-format files
 `npm run cap:run:android` - build and deploy on Android emulator
 
