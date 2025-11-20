@@ -20,7 +20,7 @@ export function Header() {
           </Link>
         </div>
         <nav className="flex flex-1 items-center space-x-4 sm:space-x-6">
-          <Link to={Paths.HOME} className={getClass(Paths.HOME)}>
+          <Link to={Paths.CONTACTS} className={getClass(Paths.CONTACTS)}>
             Contacts
           </Link>
         </nav>

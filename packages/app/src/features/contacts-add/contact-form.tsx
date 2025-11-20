@@ -58,13 +58,13 @@ export function ContactForm() {
 
     try {
       setIsLoading(true);
-      await apiMock.createContact(contact);
+      const contactId = await apiMock.createContact(contact);
+      navigate(Paths.CONTACTS_VIEW.replace(":contactId", contactId));
     } catch {
+      navigate(Paths.CONTACTS);
     } finally {
       setIsLoading(false);
     }
-
-    navigate(Paths.HOME);
   };
 
   const handleAddAttribute = (fieldType: string) => {
@@ -102,7 +102,7 @@ export function ContactForm() {
 
   return (
     <div>
-      <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-6">
         <div className="space-y-3">
           <Label htmlFor="name">
             What is you contact's name? <span className="text-destructive">*</span>
@@ -140,7 +140,7 @@ export function ContactForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="notes">Write important details about your contact</Label>
+          <Label htmlFor="notes">What is important about your contact?</Label>
           <Textarea
             id="notes"
             name="notes"

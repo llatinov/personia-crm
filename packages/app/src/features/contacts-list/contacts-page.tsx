@@ -12,7 +12,7 @@ export default function ContactsPage() {
           <p className="text-muted-foreground mt-1">Manage and search your contacts</p>
         </div>
         <div className="flex mt-1 sm:mt-0">
-          <Link to={Paths.ADD_CONTACT}>
+          <Link to={Paths.CONTACTS_ADD}>
             <Button>Add Contact</Button>
           </Link>
         </div>

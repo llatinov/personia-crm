@@ -55,16 +55,29 @@ export class API {
   }
 
   /**
+   * Get a contact by ID
+   */
+  async getContactById(id: string): Promise<Contact | null> {
+    await this.delay();
+
+    if (this.shouldSimulateError()) {
+      throw new Error("Failed to fetch contact. Please try again.");
+    }
+
+    return contactsRepository.getById(id);
+  }
+
+  /**
    * Create a new contact
    */
-  async createContact(contact: Contact): Promise<void> {
+  async createContact(contact: Contact): Promise<string> {
     await this.delay();
 
     if (this.shouldSimulateError()) {
       throw new Error("Failed to create contact. Please try again.");
     }
 
-    contactsRepository.add(contact);
+    return contactsRepository.add(contact).id;
   }
 
   /**

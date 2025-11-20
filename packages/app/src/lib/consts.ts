@@ -3,7 +3,9 @@ import { ContactAttributeCategory, ContactAttributeDefinition, ContactAttributeI
 export enum Paths {
   HOME = "/",
   USER_LOGIN = "/login",
-  ADD_CONTACT = "/add"
+  CONTACTS = "/contacts",
+  CONTACTS_ADD = "/contacts/add",
+  CONTACTS_VIEW = "/contacts/:contactId"
 }
 
 export const CustomContactAttributeId = "custom";

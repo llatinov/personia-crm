@@ -1,4 +1,5 @@
-import { Card, CardContent, Input } from "@components/ui";
+import { Input } from "@components/ui";
+import { InfoCard } from "app/components/info-card/info-card";
 import Loader from "app/components/loader/loader";
 import { apiMock } from "app/lib/api-mock";
 import { Contact } from "app/types/contacts";
@@ -70,15 +71,13 @@ export function ContactList() {
       {isLoading ? (
         <Loader />
       ) : displayedContacts.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <p className="text-muted-foreground text-center">
-              {searchQuery
-                ? "No contacts found matching your search"
-                : "No contacts yet. Add your first contact to get started!"}
-            </p>
-          </CardContent>
-        </Card>
+        <InfoCard
+          message={
+            searchQuery
+              ? "No contacts found matching your search"
+              : "No contacts yet. Add your first contact to get started!"
+          }
+        />
       ) : (
         <div className="grid gap-4 sm:grid-cols-3">
           {displayedContacts.map((contact) => (
