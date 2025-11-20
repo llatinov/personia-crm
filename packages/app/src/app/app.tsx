@@ -1,14 +1,14 @@
 import { ErrorBoundary } from "app/components/error-boundary/error-boundary";
-import AddContactPage from "app/features/contacts-add/add-contact-page";
-import ContactsPage from "app/features/contacts-list/contacts-page";
-import ViewContactPage from "app/features/contacts-view/view-contact-page";
+import { AddContactPage } from "app/features/contacts/add/add-contact-page";
+import { ContactsPage } from "app/features/contacts/list/contacts-page";
+import { ViewContactPage } from "app/features/contacts/view/view-contact-page";
 import { Paths } from "app/lib/consts";
-import HomePage from "app/pages/home-page";
-import NoMatchPage from "app/pages/no-match-page";
+import { HomePage } from "app/pages/home-page";
+import { NoMatchPage } from "app/pages/no-match-page";
 import { Route, Routes } from "react-router-dom";
-import MainLayout from "./main-layout";
+import { MainLayout } from "./main-layout";
 
-export default function App() {
+export function App() {
   return (
     <ErrorBoundary>
       <Routes>

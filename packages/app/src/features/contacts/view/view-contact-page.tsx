@@ -1,15 +1,15 @@
 import { Button } from "@components/ui";
 import { InfoCard } from "app/components/info-card/info-card";
-import Loader from "app/components/loader/loader";
+import { Loader } from "app/components/loader/loader";
 import { apiMock } from "app/lib/api-mock";
 import { Paths } from "app/lib/consts";
 import { Contact } from "app/types/contacts";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import ContactCard from "./contact-card";
+import { ContactCard } from "./contact-card";
 
-export default function ViewContactPage() {
+export function ViewContactPage() {
   const { contactId } = useParams<{ contactId: string }>();
   const [contact, setContact] = useState<Contact | null>(null);
   const [isLoading, setIsLoading] = useState(false);

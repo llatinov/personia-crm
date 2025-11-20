@@ -14,7 +14,7 @@
 ## Adding new React component
 
 - Register properties with `interface Props{}` if any
-- Component has the following structure `export default function COMPONENT_NAME(props: Props)`
+- Component has the following structure `export function COMPONENT_NAME(props: Props)` and does not `export default` in the end
 
 ## Adding new library, class or functionality
 

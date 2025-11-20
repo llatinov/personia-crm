@@ -1,6 +1,6 @@
 import { Input } from "@components/ui";
 import { InfoCard } from "app/components/info-card/info-card";
-import Loader from "app/components/loader/loader";
+import { Loader } from "app/components/loader/loader";
 import { apiMock } from "app/lib/api-mock";
 import { Contact } from "app/types/contacts";
 import { Search } from "lucide-react";

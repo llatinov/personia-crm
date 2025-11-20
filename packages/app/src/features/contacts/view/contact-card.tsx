@@ -6,7 +6,7 @@ interface Props {
   contact: Contact;
 }
 
-export default function ContactCard(props: Props) {
+export function ContactCard(props: Props) {
   return (
     <>
       <Card>

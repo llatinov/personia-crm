@@ -1,6 +1,6 @@
 import { ContactForm } from "./contact-form";
 
-export default function AddContactPage() {
+export function AddContactPage() {
   return (
     <div className="space-y-2 sm:space-y-6 w-full max-w-3xl mx-auto">
       <div>

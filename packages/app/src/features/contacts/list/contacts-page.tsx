@@ -3,7 +3,7 @@ import { Paths } from "app/lib/consts";
 import { Link } from "react-router-dom";
 import { ContactList } from "./contact-list";
 
-export default function ContactsPage() {
+export function ContactsPage() {
   return (
     <div className="space-y-2 sm:space-y-6">
       <div className="flex gap-2 sm:flex-row sm:justify-between">
