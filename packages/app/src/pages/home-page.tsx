@@ -7,19 +7,10 @@ export function HomePage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Welcome to Personia CRM</h1>
-        <p className="text-muted-foreground mt-1">Your personal contact relationship management system</p>
+        <p className="text-muted-foreground mt-1">
+          Track and manage all your relationships and events in one place. Personia helps you stay connected.
+        </p>
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Quick Stats</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">
-            Track and manage all your relationships and events in one place. Personia helps you stay connected.
-          </p>
-        </CardContent>
-      </Card>
 
       <div className="grid gap-4 grid-cols-2">
         <Card>
@@ -28,7 +19,7 @@ export function HomePage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground mb-4">
-              Store contact information, track relationships, and keep your network organized.
+              Store contact information and keep your network organized.
             </p>
           </CardContent>
           <CardFooter>

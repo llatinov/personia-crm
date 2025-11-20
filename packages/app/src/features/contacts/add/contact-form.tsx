@@ -244,13 +244,7 @@ export function ContactForm(props: Props) {
         </div>
 
         <div className="flex gap-4 pt-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => navigate(Paths.CONTACTS)}
-            className="flex-1"
-            disabled={isLoading}
-          >
+          <Button type="button" variant="outline" onClick={() => navigate(-1)} className="flex-1" disabled={isLoading}>
             Cancel
           </Button>
           <Button type="submit" className="flex-1" disabled={isLoading}>
