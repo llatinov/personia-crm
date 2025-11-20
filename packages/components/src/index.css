@@ -87,3 +87,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* modals enable shadcn 'data-scroll-locked' which adds margin-right and makes the window to jump */
+[data-scroll-locked][data-scroll-locked] {
+  margin-right: 0 !important;
+}

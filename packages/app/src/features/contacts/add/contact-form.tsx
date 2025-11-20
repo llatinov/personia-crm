@@ -247,7 +247,7 @@ export function ContactForm(props: Props) {
           <Button
             type="button"
             variant="outline"
-            onClick={() => navigate(Paths.HOME)}
+            onClick={() => navigate(Paths.CONTACTS)}
             className="flex-1"
             disabled={isLoading}
           >

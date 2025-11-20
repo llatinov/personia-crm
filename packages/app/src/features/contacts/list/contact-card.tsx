@@ -3,7 +3,6 @@ import { Paths } from "app/lib/consts";
 import { Contact, ContactAttribute } from "app/types/contacts";
 import { Mail } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { DeleteContactButton } from "../delete/delete-contact-button";
 
 interface Props {
   contact: Contact;
@@ -27,9 +26,6 @@ export function ContactCard(props: Props) {
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <CardTitle className="text-lg">{props.contact.name}</CardTitle>
-          </div>
-          <div onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-            <DeleteContactButton contact={props.contact} onDelete={props.onContactDelete} />
           </div>
         </div>
       </CardHeader>
