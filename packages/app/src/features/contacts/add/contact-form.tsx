@@ -13,12 +13,17 @@ import {
 } from "@components/ui";
 import { apiMock } from "app/lib/api-mock";
 import { CONTACT_ATTRIBUTES, CustomContactAttributeId, Paths } from "app/lib/consts";
+import { newContactAttribute } from "app/lib/contacts";
 import { Contact, ContactAttribute, ContactAttributeCategory } from "app/types/contacts";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AttributeField } from "./attribute-field";
 
-export function ContactForm() {
+interface Props {
+  contact?: Contact;
+}
+
+export function ContactForm(props: Props) {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [meetDate, setMeetDate] = useState("");
@@ -30,6 +35,16 @@ export function ContactForm() {
   const [customFieldName, setCustomFieldName] = useState("");
   const [lastAddedAttributeId, setLastAddedAttributeId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (props.contact) {
+      setName(props.contact.name || "");
+      setMeetDate(props.contact.meetDate || "");
+      setMeetLocation(props.contact.meetLocation || "");
+      setNotes(props.contact.notes || "");
+      setAttributes(props.contact.attributes || []);
+    }
+  }, [props.contact]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,12 +83,7 @@ export function ContactForm() {
   };
 
   const handleAddAttribute = (fieldType: string) => {
-    const newAttribute: ContactAttribute = {
-      id: crypto.randomUUID(),
-      fieldType,
-      fieldCategory: CONTACT_ATTRIBUTES[fieldType]?.category || ContactAttributeCategory.Custom,
-      value: ""
-    };
+    const newAttribute: ContactAttribute = newContactAttribute(fieldType);
     setAttributes((prev) => [...prev, newAttribute]);
     setSelectedField("");
     setLastAddedAttributeId(newAttribute.id);

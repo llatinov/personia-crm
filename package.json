@@ -4,9 +4,10 @@
   "license": "MIT",
   "scripts": {
     "dev": "nx run-many --target=serve --projects=app",
+    "build": "nx build app",
     "lint": "nx run-many --target=lint",
     "test": "nx run-many --target=test",
-    "cap:sync": "nx build app && npx cap sync",
+    "cap:sync": "npm run build && npx cap sync",
     "cap:open:android": "npx cap open android",
     "cap:open:ios": "npx cap open ios",
     "cap:run:android": "npm run cap:sync && npx cap run android",
@@ -15,6 +16,7 @@
   "private": true,
   "dependencies": {
     "@capacitor/android": "^7.4.4",
+    "@capacitor/barcode-scanner": "^2.2.0",
     "@capacitor/core": "^7.4.4",
     "@capacitor/dialog": "^7.0.2",
     "@capacitor/ios": "^7.4.4",
