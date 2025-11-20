@@ -6,10 +6,12 @@ import { Paths } from "app/lib/consts";
 import { Contact } from "app/types/contacts";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { DeleteContactButton } from "../delete/delete-contact-button";
 import { ContactCard } from "./contact-card";
 
 export function ViewContactPage() {
+  const navigate = useNavigate();
   const { contactId } = useParams<{ contactId: string }>();
   const [contact, setContact] = useState<Contact | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,13 +44,14 @@ export function ViewContactPage() {
 
   return (
     <div className="space-y-3 sm:space-y-6">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between">
         <Link to={Paths.CONTACTS}>
           <Button variant="ghost" size="sm">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Contacts
           </Button>
         </Link>
+        <DeleteContactButton contact={contact} onDelete={() => navigate(Paths.CONTACTS)} />
       </div>
 
       {isLoading ? (

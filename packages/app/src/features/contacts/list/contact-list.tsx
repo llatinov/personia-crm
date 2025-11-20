@@ -6,12 +6,10 @@ import { Contact } from "app/types/contacts";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ContactCard } from "./contact-card";
-import { DeleteContactModal } from "./delete-contact-modal";
 
 export function ContactList() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -42,19 +40,6 @@ export function ContactList() {
       })
     : contacts;
 
-  const handleDelete = async () => {
-    if (!contactToDelete) return;
-
-    try {
-      setIsLoading(true);
-      await apiMock.deleteContact(contactToDelete.id);
-      await loadContacts();
-      setContactToDelete(null);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className="space-y-6 w-full">
       <div className="relative">
@@ -81,16 +66,10 @@ export function ContactList() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-3">
           {displayedContacts.map((contact) => (
-            <ContactCard key={contact.id} contact={contact} onDelete={() => setContactToDelete(contact)} />
+            <ContactCard key={contact.id} contact={contact} onContactDelete={async () => await loadContacts()} />
           ))}
         </div>
       )}
-
-      <DeleteContactModal
-        contact={contactToDelete}
-        onOpenChange={() => setContactToDelete(null)}
-        onConfirm={handleDelete}
-      />
     </div>
   );
 }

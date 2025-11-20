@@ -11,6 +11,7 @@ import { Contact } from "app/types/contacts";
 
 interface Props {
   contact: Contact | null;
+  isLoading: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
 }
@@ -35,10 +36,10 @@ export function DeleteContactModal(props: Props) {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button type="button" variant="outline" onClick={closeModal}>
+          <Button type="button" variant="outline" onClick={closeModal} disabled={props.isLoading}>
             Cancel
           </Button>
-          <Button type="button" variant="destructive" onClick={handleConfirm}>
+          <Button type="button" variant="destructive" onClick={handleConfirm} disabled={props.isLoading}>
             Delete
           </Button>
         </DialogFooter>

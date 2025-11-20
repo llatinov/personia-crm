@@ -1,12 +1,13 @@
-import { Button, Card, CardContent, CardHeader, CardTitle } from "@components/ui";
+import { Card, CardContent, CardHeader, CardTitle } from "@components/ui";
 import { Paths } from "app/lib/consts";
 import { Contact, ContactAttribute } from "app/types/contacts";
-import { Mail, Trash2 } from "lucide-react";
+import { Mail } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { DeleteContactButton } from "../delete/delete-contact-button";
 
 interface Props {
   contact: Contact;
-  onDelete: (id: string, name: string) => void;
+  onContactDelete: () => void;
 }
 
 export function ContactCard(props: Props) {
@@ -14,11 +15,6 @@ export function ContactCard(props: Props) {
 
   const handleCardClick = () => {
     navigate(Paths.CONTACTS_VIEW.replace(":contactId", props.contact.id));
-  };
-
-  const handleDeleteClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    props.onDelete(props.contact.id, props.contact.name);
   };
 
   const handleEmailClick = (e: React.MouseEvent) => {
@@ -32,14 +28,9 @@ export function ContactCard(props: Props) {
           <div className="flex-1">
             <CardTitle className="text-lg">{props.contact.name}</CardTitle>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleDeleteClick}
-            className="h-8 w-8 text-muted-foreground hover:text-destructive"
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
+          <div onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+            <DeleteContactButton contact={props.contact} onDelete={props.onContactDelete} />
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-2 text-sm">
