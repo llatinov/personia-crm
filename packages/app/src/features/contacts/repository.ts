@@ -1,7 +1,7 @@
 import { storage } from "app/lib/local-storage";
 import type { Contact } from "app/types/contacts";
 
-const STORAGE_KEY = "personia-contacts";
+const STORAGE_KEY = "personia-crm-contacts";
 
 export class ContactsRepository {
   private static instance: ContactsRepository;

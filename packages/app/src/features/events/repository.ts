@@ -1,7 +1,7 @@
 import { storage } from "app/lib/local-storage";
 import type { Event } from "app/types/events";
 
-const STORAGE_KEY = "personia-events";
+const STORAGE_KEY = "personia-crm-events";
 
 export class EventsRepository {
   private static instance: EventsRepository;

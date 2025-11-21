@@ -1,4 +1,4 @@
-import { Button } from "@components/ui";
+import { Button, Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui";
 import { InfoCard } from "app/components/info-card/info-card";
 import { Loader } from "app/components/loader/loader";
 import { Paths } from "app/lib/consts";
@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { apiMockContacts } from "../api-mock";
 import { ContactCard } from "./contact-card";
+import { ContactMeetingsTab } from "./contact-meetings-tab";
 import { DeleteContactButton } from "./delete-contact-button";
 
 export function ViewContactPage() {
@@ -59,7 +60,18 @@ export function ViewContactPage() {
       ) : error || !contact ? (
         <InfoCard message={error || "Contact not found"} />
       ) : (
-        <ContactCard contact={contact} />
+        <Tabs defaultValue="details" className="w-full">
+          <TabsList>
+            <TabsTrigger value="details">Details</TabsTrigger>
+            <TabsTrigger value="meetings">Meetings</TabsTrigger>
+          </TabsList>
+          <TabsContent value="details">
+            <ContactCard contact={contact} />
+          </TabsContent>
+          <TabsContent value="meetings">
+            <ContactMeetingsTab contactId={contact.id} />
+          </TabsContent>
+        </Tabs>
       )}
     </div>
   );

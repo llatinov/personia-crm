@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui";
+import { formatDate } from "app/lib/date";
 import { Event } from "app/types/events";
 
 interface Props {
@@ -14,18 +15,18 @@ export function EventCard(props: Props) {
       <CardContent className="space-y-1 sm:space-y-3">
         <div>
           <span className="font-medium text-muted-foreground">Date: </span>
-          <span>{new Date(props.event.date).toLocaleDateString()}</span>
+          <span>{formatDate(props.event.date)}</span>
         </div>
         {props.event.location && (
           <div>
             <span className="font-medium text-muted-foreground">Location: </span>
-            <span>{props.event.location}</span>
+            <span>{props.event.location.location}</span>
           </div>
         )}
-        {props.event.information && (
+        {props.event.notes && (
           <div>
-            <span className="font-medium text-muted-foreground">Information: </span>
-            <span className="whitespace-pre-wrap">{props.event.information}</span>
+            <span className="font-medium text-muted-foreground">Notes: </span>
+            <span className="whitespace-pre-wrap">{props.event.notes}</span>
           </div>
         )}
       </CardContent>

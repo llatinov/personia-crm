@@ -1,12 +1,49 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui";
-import { CONTACT_ATTRIBUTES, CustomContactAttributeIcon } from "app/lib/consts";
+import { CONTACT_ATTRIBUTES, CustomContactAttributeIcon, Paths } from "app/lib/consts";
+import { formatDate } from "app/lib/date";
 import { Contact } from "app/types/contacts";
+import { Event } from "app/types/events";
+import { LocationType } from "app/types/location";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { apiMockEvents } from "../../events/api-mock";
 
 interface Props {
   contact: Contact;
 }
 
 export function ContactCard(props: Props) {
+  const [event, setEvent] = useState<Event>();
+
+  useEffect(() => {
+    if (props.contact.meetLocation?.type === LocationType.EVENT) {
+      loadEvent();
+    }
+  }, [props.contact.meetLocation]);
+
+  const loadEvent = async () => {
+    if (props.contact.meetLocation?.location) {
+      const eventData = await apiMockEvents.getEventById(props.contact.meetLocation?.location);
+      setEvent(eventData);
+    }
+  };
+
+  const getMeetLocationDisplay = () => {
+    if (props.contact.meetLocation?.type === LocationType.EVENT && event) {
+      return (
+        <Link to={Paths.EVENTS_VIEW.replace(":eventId", event.id)} className="text-primary hover:underline">
+          {event.name} ({formatDate(event.date)})
+        </Link>
+      );
+    }
+    if (props.contact.meetLocation) {
+      return <span>{props.contact.meetLocation.location}</span>;
+    }
+    return null;
+  };
+
+  const meetLocationDisplay = getMeetLocationDisplay();
+
   return (
     <>
       <Card>
@@ -17,13 +54,13 @@ export function ContactCard(props: Props) {
           {props.contact.meetDate && (
             <div>
               <span className="font-medium text-muted-foreground">Met on: </span>
-              <span>{new Date(props.contact.meetDate).toLocaleDateString()}</span>
+              <span>{formatDate(props.contact.meetDate)}</span>
             </div>
           )}
-          {props.contact.meetLocation && (
+          {meetLocationDisplay && (
             <div>
               <span className="font-medium text-muted-foreground">Met at: </span>
-              <span>{props.contact.meetLocation}</span>
+              {meetLocationDisplay}
             </div>
           )}
           {props.contact.notes && (

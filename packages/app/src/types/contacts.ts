@@ -1,3 +1,5 @@
+import { Location } from "./location";
+
 export enum ContactAttributeCategory {
   Contact = "Contact",
   Work = "Work",
@@ -16,7 +18,7 @@ export interface Contact {
   id: string;
   name: string;
   meetDate?: string;
-  meetLocation?: string;
+  meetLocation?: Location;
   notes?: string;
   attributes: ContactAttribute[];
   createdAt: Date;

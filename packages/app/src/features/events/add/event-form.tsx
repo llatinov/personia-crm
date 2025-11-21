@@ -1,5 +1,6 @@
 import { Dialog } from "@capacitor/dialog";
 import { Button, Input, Label, Textarea } from "@components/ui";
+import { DateInput } from "app/components/date-input/date-input";
 import { Paths } from "app/lib/consts";
 import { Event } from "app/types/events";
 import { useState } from "react";
@@ -10,8 +11,8 @@ export function EventForm() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [date, setDate] = useState("");
-  const [location, setLocation] = useState("");
-  const [information, setInformation] = useState("");
+  const [address, setAddress] = useState("");
+  const [notes, setNotes] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,8 +37,8 @@ export function EventForm() {
     const event = {
       name: name.trim(),
       date: date,
-      location: location.trim() || undefined,
-      information: information.trim() || undefined
+      address: address.trim() || undefined,
+      notes: notes.trim() || undefined
     } as Event;
 
     try {
@@ -68,31 +69,26 @@ export function EventForm() {
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="date">
-            Date <span className="text-destructive">*</span>
-          </Label>
-          <Input id="date" name="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
-        </div>
+        <DateInput label="Date" name="date" value={date} onChange={setDate} required />
 
         <div className="space-y-2">
-          <Label htmlFor="location">Location</Label>
+          <Label htmlFor="address">Address</Label>
           <Input
-            id="location"
-            name="location"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
+            id="address"
+            name="address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
             placeholder="e.g., Conference Center, Office, Online"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="information">Information</Label>
+          <Label htmlFor="notes">Notes</Label>
           <Textarea
-            id="information"
-            name="information"
-            value={information}
-            onChange={(e) => setInformation(e.target.value)}
+            id="notes"
+            name="notes"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
             placeholder="Add details about this event..."
           />
         </div>

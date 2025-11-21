@@ -5,3 +5,10 @@ export const generateInputDateString = (date?: Date): string => {
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 };
+
+export const formatDate = (date?: string): string => {
+  if (!date) {
+    return "";
+  }
+  return new Date(date).toLocaleDateString();
+};

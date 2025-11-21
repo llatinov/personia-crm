@@ -8,7 +8,10 @@ export enum Paths {
   CONTACTS_VIEW = "/contacts/:contactId",
   EVENTS = "/events",
   EVENTS_ADD = "/events/add",
-  EVENTS_VIEW = "/events/:eventId"
+  EVENTS_VIEW = "/events/:eventId",
+  MEETINGS = "/meetings",
+  MEETINGS_ADD = "/meetings/add",
+  MEETINGS_VIEW = "/meetings/:meetingId"
 }
 
 export const CustomContactAttributeId = "custom";

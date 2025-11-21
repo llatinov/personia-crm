@@ -11,9 +11,12 @@ import {
   SelectValue,
   Textarea
 } from "@components/ui";
+import { DateInput } from "app/components/date-input/date-input";
+import { LocationPicker } from "app/components/location-picker/location-picker";
 import { CONTACT_ATTRIBUTES, CustomContactAttributeId, Paths } from "app/lib/consts";
 import { newContactAttribute } from "app/lib/contacts";
 import { Contact, ContactAttribute, ContactAttributeCategory } from "app/types/contacts";
+import { Location } from "app/types/location";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiMockContacts } from "../api-mock";
@@ -27,7 +30,7 @@ export function ContactForm(props: Props) {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [meetDate, setMeetDate] = useState("");
-  const [meetLocation, setMeetLocation] = useState("");
+  const [meetLocation, setMeetLocation] = useState<Location>();
   const [notes, setNotes] = useState("");
   const [attributes, setAttributes] = useState<ContactAttribute[]>([]);
   const [selectedField, setSelectedField] = useState("");
@@ -40,7 +43,7 @@ export function ContactForm(props: Props) {
     if (props.contact) {
       setName(props.contact.name || "");
       setMeetDate(props.contact.meetDate || "");
-      setMeetLocation(props.contact.meetLocation || "");
+      setMeetLocation(props.contact.meetLocation);
       setNotes(props.contact.notes || "");
       setAttributes(props.contact.attributes || []);
     }
@@ -60,7 +63,7 @@ export function ContactForm(props: Props) {
     const contact = {
       name: name.trim(),
       meetDate: meetDate.trim() || undefined,
-      meetLocation: meetLocation.trim() || undefined,
+      meetLocation: meetLocation,
       notes: notes.trim() || undefined,
       attributes: [] as ContactAttribute[]
     } as Contact;
@@ -127,26 +130,10 @@ export function ContactForm(props: Props) {
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="meetDate">When did you meet?</Label>
-          <Input
-            id="meetDate"
-            name="meetDate"
-            type="date"
-            value={meetDate}
-            onChange={(e) => setMeetDate(e.target.value)}
-          />
-        </div>
+        <DateInput label="When did you meet?" name="meetDate" value={meetDate} onChange={setMeetDate} />
 
         <div className="space-y-2">
-          <Label htmlFor="meetLocation">Where did you meet?</Label>
-          <Input
-            id="meetLocation"
-            name="meetLocation"
-            value={meetLocation}
-            onChange={(e) => setMeetLocation(e.target.value)}
-            placeholder="e.g., Conference, Coffee shop, Online"
-          />
+          <LocationPicker location={meetLocation} label="Where did you meet?" onLocationChange={setMeetLocation} />
         </div>
 
         <div className="space-y-2">
