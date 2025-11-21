@@ -3,6 +3,7 @@ import { Paths } from "app/lib/consts";
 import { formatDate } from "app/lib/date";
 import { Contact } from "app/types/contacts";
 import { Event } from "app/types/events";
+import { LocationType } from "app/types/location";
 import { Meeting } from "app/types/meetings";
 import { Link } from "react-router-dom";
 
@@ -14,10 +15,10 @@ interface Props {
 
 export function MeetingDetailCard(props: Props) {
   const getLocationDisplay = () => {
-    if (props.meeting.locationType === "event" && props.event) {
+    if (props.meeting.location?.type === LocationType.EVENT && props.event) {
       return props.event.name;
     }
-    return props.meeting.customLocation || "No location specified";
+    return props.meeting.location?.location || "No location specified";
   };
 
   const isUpcoming = new Date(props.meeting.date) > new Date();
@@ -50,7 +51,7 @@ export function MeetingDetailCard(props: Props) {
           <MapPin className="h-4 w-4 mt-0.5 text-muted-foreground" />
           <div>
             <span className="font-medium text-muted-foreground">Location: </span>
-            {props.meeting.locationType === "event" && props.event ? (
+            {props.meeting.location?.type === LocationType.EVENT && props.event ? (
               <Link to={Paths.EVENTS_VIEW.replace(":eventId", props.event.id)} className="text-primary hover:underline">
                 {props.event.name}
               </Link>

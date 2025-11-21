@@ -3,17 +3,19 @@ import {
   Check,
   ChevronsUpDown,
   Command,
-  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
   CommandSeparator,
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
   Input,
-  Label,
-  Popover,
-  PopoverContent,
-  PopoverTrigger
+  Label
 } from "@components/ui";
 import { DateInput } from "app/components/date-input/date-input";
 import { apiMockEvents } from "app/features/events/api-mock";
@@ -21,6 +23,8 @@ import { formatDate } from "app/lib/date";
 import { Event } from "app/types/events";
 import { Location, LocationType } from "app/types/location";
 import { useEffect, useState } from "react";
+import { ErrorOverlay } from "../error-overlay/error-overlay";
+import { Loader } from "../loader/loader";
 
 interface Props {
   location?: Location;
@@ -37,6 +41,8 @@ export function LocationPicker(props: Props) {
   const [eventSearch, setEventSearch] = useState("");
   const [eventName, setEventName] = useState("");
   const [eventDate, setEventDate] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     if (props.location) {
@@ -47,37 +53,52 @@ export function LocationPicker(props: Props) {
 
   useEffect(() => {
     if (locationType === LocationType.EVENT) {
-      loadEvents()
-        .then((events: Event[]) => {
-          setEvents(events);
-        })
-        .catch(() => setEvents([]));
-      setEventOpen(true);
+      loadEvents();
     } else {
       setLocation("");
     }
   }, [locationType]);
 
   const loadEvents = async () => {
-    const eventsData = await apiMockEvents.getEvents();
-    return eventsData;
+    try {
+      setIsLoading(true);
+      setEventOpen(true);
+      const events = await apiMockEvents.getEvents();
+      setEvents(events);
+    } catch {
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const resetForm = () => {
+    setEventOpen(!eventOpen);
+    setEventSearch("");
+    setEventName("");
+    setEventDate("");
   };
 
   const handleCreateEvent = async () => {
-    if (!eventSearch.trim()) return;
+    if (!eventName.trim() && !eventSearch.trim()) return;
+
     const newEvent = {
       name: eventName.trim() || eventSearch.trim(),
       date: eventDate
     } as Event;
+
     try {
+      setIsLoading(true);
       const eventId = await apiMockEvents.createEvent(newEvent);
       const updatedEvents = await apiMockEvents.getEvents();
       setEvents(updatedEvents);
-      setEventOpen(false);
-      setEventSearch("");
+      resetForm();
       props.onLocationChange({ type: locationType, location: eventId });
     } catch (error) {
-      console.error("Failed to create event:", error);
+      setIsError(true);
+      resetForm();
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -92,6 +113,7 @@ export function LocationPicker(props: Props) {
   const selectedEvent = events.find((event: Event) => event.id === location);
   const filteredEvents = events.filter((event: Event) => event.name.toLowerCase().includes(eventSearch.toLowerCase()));
   const isEventMode = locationType === LocationType.EVENT;
+  const createDisabled = !eventName || !eventDate;
 
   return (
     <div className="space-y-2">
@@ -100,56 +122,82 @@ export function LocationPicker(props: Props) {
       </Label>
       <div className="flex gap-2">
         {isEventMode ? (
-          <Popover open={eventOpen} onOpenChange={setEventOpen}>
-            <PopoverTrigger asChild>
+          <Dialog open={eventOpen} onOpenChange={resetForm}>
+            <DialogTrigger asChild>
               <Button variant="outline" role="combobox" aria-expanded={eventOpen} className="flex-1 justify-between">
-                {selectedEvent ? selectedEvent.name : "Select event..."}
+                {selectedEvent ? `Event: ${selectedEvent.name}` : "Select event..."}
                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-full p-0 min-w-[400px]">
+            </DialogTrigger>
+            <DialogContent className="p-0" aria-describedby={undefined}>
+              <DialogHeader className="p-4 pb-0">
+                <DialogTitle>Select Event</DialogTitle>
+              </DialogHeader>
               <Command>
                 <CommandInput placeholder="Search events..." value={eventSearch} onValueChange={setEventSearch} />
-                <CommandList>
-                  <CommandEmpty>
-                    <p className="text-sm text-muted-foreground mb-2">No event found.</p>
-                  </CommandEmpty>
-                  <CommandGroup>
-                    {filteredEvents.map((event) => (
-                      <CommandItem
-                        key={event.id}
-                        value={event.name}
-                        onSelect={() => {
-                          setLocation(event.id);
-                          setEventOpen(false);
-                          setEventSearch("");
-                          props.onLocationChange({ type: locationType, location: event.id });
-                        }}
-                      >
-                        <Check className={`mr-2 h-4 w-4 ${location === event.id ? "opacity-100" : "opacity-0"}`} />
-                        <div className="flex flex-col">
-                          <span>{event.name}</span>
-                          <span className="text-xs text-muted-foreground">{formatDate(event.date)}</span>
-                        </div>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                  {eventSearch.trim() && (
+                <CommandList className="max-h-[70vh] h-fit">
+                  {isLoading ? (
+                    <div className="py-6">
+                      <Loader />
+                    </div>
+                  ) : (
                     <>
+                      {events.length > 0 ? (
+                        <CommandGroup>
+                          {filteredEvents.map((event) => (
+                            <CommandItem
+                              key={event.id}
+                              value={event.name}
+                              onSelect={() => {
+                                setLocation(event.id);
+                                setEventOpen(false);
+                                setEventSearch("");
+                                props.onLocationChange({ type: locationType, location: event.id });
+                              }}
+                            >
+                              <Check
+                                className={`mr-2 h-4 w-4 ${location === event.id ? "opacity-100" : "opacity-0"}`}
+                              />
+                              <div className="flex flex-col">
+                                <span>{event.name}</span>
+                                <span className="text-xs text-muted-foreground">{formatDate(event.date)}</span>
+                              </div>
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      ) : (
+                        <p className="text-sm text-muted-foreground p-3 sm:p-6">No events found.</p>
+                      )}
                       <CommandSeparator />
                       <CommandGroup>
-                        <CommandItem className="py-2" value={eventName || eventSearch}>
-                          <div className="space-y-1 sm:space-y-3">
+                        <CommandItem value={eventName || eventSearch}>
+                          <div className="space-y-3 w-full">
+                            <h1 className="text-base font-bold tracking-tight">Create Event</h1>
                             <div className="space-y-2">
-                              <Label htmlFor="eventName">Event name</Label>
+                              <Label htmlFor="eventName">
+                                Event name <span className="text-destructive">*</span>
+                              </Label>
                               <Input
+                                id="eventName"
                                 name="eventName"
                                 value={eventName || eventSearch}
                                 onChange={(e) => setEventName(e.target.value)}
                               />
                             </div>
-                            <DateInput label="Event date" name="eventDate" value={eventDate} onChange={setEventDate} />
-                            <Button type="button" size="sm" onClick={handleCreateEvent} className="gap-1">
+                            <DateInput
+                              label="Event date"
+                              name="eventDate"
+                              value={eventDate}
+                              onChange={setEventDate}
+                              required
+                            />
+                            <Button
+                              type="button"
+                              size="sm"
+                              onClick={handleCreateEvent}
+                              className="gap-1"
+                              disabled={createDisabled}
+                            >
                               Create New Event
                             </Button>
                           </div>
@@ -159,8 +207,9 @@ export function LocationPicker(props: Props) {
                   )}
                 </CommandList>
               </Command>
-            </PopoverContent>
-          </Popover>
+              <DialogFooter></DialogFooter>
+            </DialogContent>
+          </Dialog>
         ) : (
           <Input
             value={location}
@@ -173,6 +222,8 @@ export function LocationPicker(props: Props) {
           Event
         </Button>
       </div>
+
+      <ErrorOverlay open={isError} onClose={() => setIsError(false)} />
     </div>
   );
 }

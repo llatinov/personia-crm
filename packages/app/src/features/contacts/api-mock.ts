@@ -1,12 +1,9 @@
+import { ApiBase } from "app/lib/api-mock";
 import type { Contact } from "app/types/contacts";
 import { contactsRepository } from "./repository";
 
-export class API {
-  private static instance: API;
-  private simulateDelay: number = 300; // milliseconds
-  private simulateErrors: boolean = false;
-
-  private constructor() {}
+export class API extends ApiBase {
+  protected static instance: API;
 
   static getInstance(): API {
     if (!API.instance) {
@@ -16,38 +13,12 @@ export class API {
   }
 
   /**
-   * Configure API simulation settings
-   */
-  configure(options: { delay?: number; simulateErrors?: boolean }): void {
-    if (options.delay !== undefined) {
-      this.simulateDelay = options.delay;
-    }
-    if (options.simulateErrors !== undefined) {
-      this.simulateErrors = options.simulateErrors;
-    }
-  }
-
-  /**
-   * Simulate network delay
-   */
-  private async delay(): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, this.simulateDelay));
-  }
-
-  /**
-   * Simulate random API errors (for testing)
-   */
-  private shouldSimulateError(): boolean {
-    return this.simulateErrors && Math.random() < 0.1; // 10% error rate
-  }
-
-  /**
    * Get all contacts
    */
   async getContacts(): Promise<Contact[]> {
     await this.delay();
 
-    if (this.shouldSimulateError()) {
+    if (this.shouldSimulateGetError()) {
       throw new Error("Failed to fetch contacts. Please try again.");
     }
 
@@ -60,7 +31,7 @@ export class API {
   async getContactById(id: string): Promise<Contact | undefined> {
     await this.delay();
 
-    if (this.shouldSimulateError()) {
+    if (this.shouldSimulateGetError()) {
       throw new Error("Failed to fetch contact. Please try again.");
     }
 
@@ -73,7 +44,7 @@ export class API {
   async createContact(contact: Contact): Promise<string> {
     await this.delay();
 
-    if (this.shouldSimulateError()) {
+    if (this.shouldSimulateCreateError()) {
       throw new Error("Failed to create contact. Please try again.");
     }
 
@@ -86,7 +57,7 @@ export class API {
   async deleteContact(id: string): Promise<void> {
     await this.delay();
 
-    if (this.shouldSimulateError()) {
+    if (this.shouldSimulateDeleteError()) {
       throw new Error("Failed to delete contact. Please try again.");
     }
 

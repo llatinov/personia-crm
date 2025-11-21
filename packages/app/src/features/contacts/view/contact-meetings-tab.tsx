@@ -1,8 +1,10 @@
 import { Button } from "@components/ui";
+import { ErrorOverlay } from "app/components/error-overlay/error-overlay";
 import { InfoCard } from "app/components/info-card/info-card";
 import { Loader } from "app/components/loader/loader";
 import { Paths } from "app/lib/consts";
 import { Event } from "app/types/events";
+import { LocationType } from "app/types/location";
 import { Meeting } from "app/types/meetings";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -18,6 +20,7 @@ export function ContactMeetingsTab(props: Props) {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     loadMeetings();
@@ -34,14 +37,15 @@ export function ContactMeetingsTab(props: Props) {
       setMeetings(sortedMeetings);
       setEvents(eventsData);
     } catch {
+      setIsError(true);
     } finally {
       setIsLoading(false);
     }
   };
 
   const getEventForMeeting = (meeting: Meeting) => {
-    if (meeting.eventId) {
-      return events.find((e) => e.id === meeting.eventId);
+    if (meeting.location && meeting.location.type == LocationType.EVENT && meeting.location?.location) {
+      return events.find((e) => e.id === meeting.location!.location);
     }
     return undefined;
   };
@@ -67,6 +71,8 @@ export function ContactMeetingsTab(props: Props) {
           ))}
         </div>
       )}
+
+      <ErrorOverlay open={isError} onClose={() => setIsError(false)} />
     </div>
   );
 }

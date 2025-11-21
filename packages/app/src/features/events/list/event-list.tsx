@@ -1,4 +1,5 @@
 import { Input } from "@components/ui";
+import { ErrorOverlay } from "app/components/error-overlay/error-overlay";
 import { InfoCard } from "app/components/info-card/info-card";
 import { Loader } from "app/components/loader/loader";
 import { Event } from "app/types/events";
@@ -11,6 +12,7 @@ export function EventList() {
   const [events, setEvents] = useState<Event[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     loadEvents();
@@ -22,6 +24,7 @@ export function EventList() {
       const response = await apiMockEvents.getEvents();
       setEvents(response || []);
     } catch {
+      setIsError(true);
     } finally {
       setIsLoading(false);
     }
@@ -68,6 +71,8 @@ export function EventList() {
           ))}
         </div>
       )}
+
+      <ErrorOverlay open={isError} onClose={() => setIsError(false)} />
     </div>
   );
 }

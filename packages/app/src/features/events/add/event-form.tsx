@@ -1,6 +1,7 @@
 import { Dialog } from "@capacitor/dialog";
 import { Button, Input, Label, Textarea } from "@components/ui";
 import { DateInput } from "app/components/date-input/date-input";
+import { ErrorOverlay } from "app/components/error-overlay/error-overlay";
 import { Paths } from "app/lib/consts";
 import { Event } from "app/types/events";
 import { useState } from "react";
@@ -14,6 +15,7 @@ export function EventForm() {
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,7 +48,7 @@ export function EventForm() {
       const eventId = await apiMockEvents.createEvent(event);
       navigate(Paths.EVENTS_VIEW.replace(":eventId", eventId));
     } catch {
-      navigate(Paths.EVENTS);
+      setIsError(true);
     } finally {
       setIsLoading(false);
     }
@@ -102,6 +104,8 @@ export function EventForm() {
           </Button>
         </div>
       </form>
+
+      <ErrorOverlay open={isError} onClose={() => setIsError(false)} />
     </div>
   );
 }

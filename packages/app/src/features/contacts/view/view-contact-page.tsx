@@ -1,4 +1,5 @@
 import { Button, Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui";
+import { ErrorOverlay } from "app/components/error-overlay/error-overlay";
 import { InfoCard } from "app/components/info-card/info-card";
 import { Loader } from "app/components/loader/loader";
 import { Paths } from "app/lib/consts";
@@ -17,6 +18,7 @@ export function ViewContactPage() {
   const [contact, setContact] = useState<Contact>();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     loadContact();
@@ -37,7 +39,7 @@ export function ViewContactPage() {
         setError("Contact not found");
       }
     } catch {
-      setError("Failed to load contact");
+      setIsError(true);
     } finally {
       setIsLoading(false);
     }
@@ -73,6 +75,8 @@ export function ViewContactPage() {
           </TabsContent>
         </Tabs>
       )}
+
+      <ErrorOverlay open={isError} onClose={() => setIsError(false)} />
     </div>
   );
 }

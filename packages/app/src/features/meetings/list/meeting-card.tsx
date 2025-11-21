@@ -2,6 +2,7 @@ import { Calendar, Card, CardContent, CardHeader, CardTitle, MapPin } from "@com
 import { Paths } from "app/lib/consts";
 import { formatDate } from "app/lib/date";
 import { Event } from "app/types/events";
+import { LocationType } from "app/types/location";
 import { Meeting } from "app/types/meetings";
 import { useNavigate } from "react-router-dom";
 
@@ -20,10 +21,10 @@ export function MeetingCard(props: Props) {
   };
 
   const getLocationDisplay = () => {
-    if (props.meeting.locationType === "event" && props.event) {
+    if (props.meeting.location?.type === LocationType.EVENT && props.event) {
       return props.event.name;
     }
-    return props.meeting.customLocation || "No location";
+    return props.meeting.location?.location || "No location";
   };
 
   const isUpcoming = new Date(props.meeting.date) > new Date();

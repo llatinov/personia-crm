@@ -1,4 +1,5 @@
 import { Input } from "@components/ui";
+import { ErrorOverlay } from "app/components/error-overlay/error-overlay";
 import { InfoCard } from "app/components/info-card/info-card";
 import { Loader } from "app/components/loader/loader";
 import { Contact } from "app/types/contacts";
@@ -11,6 +12,7 @@ export function ContactList() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     loadContacts();
@@ -22,6 +24,7 @@ export function ContactList() {
       const response = await apiMockContacts.getContacts();
       setContacts(response || []);
     } catch {
+      setIsError(true);
     } finally {
       setIsLoading(false);
     }
@@ -70,6 +73,8 @@ export function ContactList() {
           ))}
         </div>
       )}
+
+      <ErrorOverlay open={isError} onClose={() => setIsError(false)} />
     </div>
   );
 }

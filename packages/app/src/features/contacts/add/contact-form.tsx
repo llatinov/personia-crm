@@ -12,6 +12,7 @@ import {
   Textarea
 } from "@components/ui";
 import { DateInput } from "app/components/date-input/date-input";
+import { ErrorOverlay } from "app/components/error-overlay/error-overlay";
 import { LocationPicker } from "app/components/location-picker/location-picker";
 import { CONTACT_ATTRIBUTES, CustomContactAttributeId, Paths } from "app/lib/consts";
 import { newContactAttribute } from "app/lib/contacts";
@@ -38,6 +39,7 @@ export function ContactForm(props: Props) {
   const [customFieldName, setCustomFieldName] = useState("");
   const [lastAddedAttributeId, setLastAddedAttributeId] = useState<string>();
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     if (props.contact) {
@@ -79,7 +81,7 @@ export function ContactForm(props: Props) {
       const contactId = await apiMockContacts.createContact(contact);
       navigate(Paths.CONTACTS_VIEW.replace(":contactId", contactId));
     } catch {
-      navigate(Paths.CONTACTS);
+      setIsError(true);
     } finally {
       setIsLoading(false);
     }
@@ -239,6 +241,8 @@ export function ContactForm(props: Props) {
           </Button>
         </div>
       </form>
+
+      <ErrorOverlay open={isError} onClose={() => setIsError(false)} />
     </div>
   );
 }

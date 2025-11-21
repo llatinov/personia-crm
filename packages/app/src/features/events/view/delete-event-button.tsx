@@ -1,4 +1,5 @@
 import { Button } from "@components/ui";
+import { ErrorOverlay } from "app/components/error-overlay/error-overlay";
 import { Event } from "app/types/events";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -13,6 +14,7 @@ interface Props {
 export function DeleteEventButton(props: Props) {
   const [eventToDelete, setEventToDelete] = useState<Event>();
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -25,9 +27,11 @@ export function DeleteEventButton(props: Props) {
     try {
       setIsLoading(true);
       await apiMockEvents.deleteEvent(eventToDelete.id);
-      setEventToDelete(undefined);
       props.onDelete();
+    } catch {
+      setIsError(true);
     } finally {
+      setEventToDelete(undefined);
       setIsLoading(false);
     }
   };
@@ -50,6 +54,8 @@ export function DeleteEventButton(props: Props) {
           onOpenChange={(open) => !open && setEventToDelete(undefined)}
           onConfirm={handleDeleteConfirm}
         />
+
+        <ErrorOverlay open={isError} onClose={() => setIsError(false)} />
       </>
     )
   );

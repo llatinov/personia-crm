@@ -21,9 +21,9 @@ export function DeleteMeetingModal(props: Props) {
     props.onOpenChange(false);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
+    await props.onConfirm();
     closeModal();
-    props.onConfirm();
   };
 
   return (
@@ -40,7 +40,7 @@ export function DeleteMeetingModal(props: Props) {
             Cancel
           </Button>
           <Button type="button" variant="destructive" onClick={handleConfirm} disabled={props.isLoading}>
-            Delete
+            {props.isLoading ? "Deleting Meeting..." : "Delete Meeting"}
           </Button>
         </DialogFooter>
       </DialogContent>

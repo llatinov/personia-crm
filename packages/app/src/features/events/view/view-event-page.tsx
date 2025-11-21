@@ -1,4 +1,5 @@
 import { Button } from "@components/ui";
+import { ErrorOverlay } from "app/components/error-overlay/error-overlay";
 import { InfoCard } from "app/components/info-card/info-card";
 import { Loader } from "app/components/loader/loader";
 import { Paths } from "app/lib/consts";
@@ -16,6 +17,7 @@ export function ViewEventPage() {
   const [event, setEvent] = useState<Event>();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>();
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     loadEvent();
@@ -36,7 +38,7 @@ export function ViewEventPage() {
         setError("Event not found");
       }
     } catch {
-      setError("Failed to load event");
+      setIsError(true);
     } finally {
       setIsLoading(false);
     }
@@ -61,6 +63,8 @@ export function ViewEventPage() {
       ) : (
         <EventCard event={event} />
       )}
+
+      <ErrorOverlay open={isError} onClose={() => setIsError(false)} />
     </div>
   );
 }

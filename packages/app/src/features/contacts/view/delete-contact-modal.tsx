@@ -21,9 +21,9 @@ export function DeleteContactModal(props: Props) {
     props.onOpenChange(false);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
+    await props.onConfirm();
     closeModal();
-    props.onConfirm();
   };
 
   return (
@@ -40,7 +40,7 @@ export function DeleteContactModal(props: Props) {
             Cancel
           </Button>
           <Button type="button" variant="destructive" onClick={handleConfirm} disabled={props.isLoading}>
-            Delete
+            {props.isLoading ? "Deleting Contact..." : "Delete Contact"}
           </Button>
         </DialogFooter>
       </DialogContent>

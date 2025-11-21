@@ -1,4 +1,5 @@
 import { Button } from "@components/ui";
+import { ErrorOverlay } from "app/components/error-overlay/error-overlay";
 import { Contact } from "app/types/contacts";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -13,6 +14,7 @@ interface Props {
 export function DeleteContactButton(props: Props) {
   const [contactToDelete, setContactToDelete] = useState<Contact>();
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -25,9 +27,11 @@ export function DeleteContactButton(props: Props) {
     try {
       setIsLoading(true);
       await apiMockContacts.deleteContact(contactToDelete.id);
-      setContactToDelete(undefined);
       props.onDelete();
+    } catch {
+      setIsError(true);
     } finally {
+      setContactToDelete(undefined);
       setIsLoading(false);
     }
   };
@@ -50,6 +54,8 @@ export function DeleteContactButton(props: Props) {
           onOpenChange={(open) => !open && setContactToDelete(undefined)}
           onConfirm={handleDeleteConfirm}
         />
+
+        <ErrorOverlay open={isError} onClose={() => setIsError(false)} />
       </>
     )
   );

@@ -7,24 +7,16 @@ import {
   DialogHeader,
   DialogTitle
 } from "@components/ui";
-import { Paths } from "app/lib/consts";
 
 interface Props {
-  reload?: boolean;
+  open: boolean;
   onClose: () => void;
 }
 
 export function ErrorOverlay(props: Props) {
-  const closeModal = () => {
-    props.onClose();
-    if (props.reload) {
-      window.location.href = Paths.HOME;
-    }
-  };
-
   return (
-    <Dialog open onOpenChange={closeModal}>
-      <DialogContent onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={closeModal}>
+    <Dialog open={props.open} onOpenChange={props.onClose}>
+      <DialogContent onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={props.onClose}>
         <DialogHeader>
           <DialogTitle>Unexpected error</DialogTitle>
           <DialogDescription>
@@ -32,7 +24,7 @@ export function ErrorOverlay(props: Props) {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button onClick={closeModal}>Close</Button>
+          <Button onClick={props.onClose}>Close</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

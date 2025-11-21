@@ -30,7 +30,7 @@ export function DateInput(props: Props) {
           className="flex-1"
         />
         <Button type="button" variant="outline" onClick={handleNowClick}>
-          Now
+          Today
         </Button>
       </div>
     </div>

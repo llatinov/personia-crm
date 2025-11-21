@@ -4,6 +4,7 @@ import { Loader } from "app/components/loader/loader";
 import { Paths } from "app/lib/consts";
 import { Contact } from "app/types/contacts";
 import { Event } from "app/types/events";
+import { LocationType } from "app/types/location";
 import { Meeting } from "app/types/meetings";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -42,8 +43,8 @@ export function ViewMeetingPage() {
         const contactResult = await apiMockContacts.getContactById(result.contactId);
         setContact(contactResult);
 
-        if (result.eventId) {
-          const eventResult = await apiMockEvents.getEventById(result.eventId);
+        if (result.location && result.location.type === LocationType.EVENT && result.location.location) {
+          const eventResult = await apiMockEvents.getEventById(result.location.location);
           setEvent(eventResult);
         }
       } else {

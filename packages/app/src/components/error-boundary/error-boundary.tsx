@@ -1,4 +1,5 @@
 import { ErrorOverlay } from "app/components/error-overlay/error-overlay";
+import { Paths } from "app/lib/consts";
 import { Component, ErrorInfo, ReactNode } from "react";
 
 interface Props {
@@ -22,7 +23,14 @@ export class ErrorBoundary extends Component<Props, State> {
 
   public override render() {
     if (this.state.hasError) {
-      return <ErrorOverlay onClose={() => {}} reload />;
+      return (
+        <ErrorOverlay
+          open
+          onClose={() => {
+            window.location.href = Paths.HOME;
+          }}
+        />
+      );
     }
 
     return this.props.children;

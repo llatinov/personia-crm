@@ -1,4 +1,4 @@
-import { Dialog } from "@capacitor/dialog";
+import { Dialog as CapacitorDialog } from "@capacitor/dialog";
 import {
   Button,
   Check,
@@ -9,13 +9,16 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
   Label,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
   Textarea
 } from "@components/ui";
 import { DateInput } from "app/components/date-input/date-input";
+import { ErrorOverlay } from "app/components/error-overlay/error-overlay";
 import { LocationPicker } from "app/components/location-picker/location-picker";
 import { Paths } from "app/lib/consts";
 import { Contact } from "app/types/contacts";
@@ -38,8 +41,9 @@ export function MeetingForm(props: Props) {
   const [location, setLocation] = useState<Location>();
   const [date, setDate] = useState("");
   const [notes, setNotes] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -54,7 +58,7 @@ export function MeetingForm(props: Props) {
     e.preventDefault();
 
     if (!selectedContactId) {
-      await Dialog.alert({
+      await CapacitorDialog.alert({
         title: "Required fields missing",
         message: "Please select a contact"
       });
@@ -62,7 +66,7 @@ export function MeetingForm(props: Props) {
     }
 
     if (!date) {
-      await Dialog.alert({
+      await CapacitorDialog.alert({
         title: "Required fields missing",
         message: "Please enter a date for the meeting"
       });
@@ -85,7 +89,7 @@ export function MeetingForm(props: Props) {
         navigate(Paths.MEETINGS_VIEW.replace(":meetingId", meetingId));
       }
     } catch {
-      navigate(Paths.CONTACTS);
+      setIsError(true);
     } finally {
       setIsLoading(false);
     }
@@ -101,8 +105,8 @@ export function MeetingForm(props: Props) {
             <Label>
               Contact <span className="text-destructive">*</span>
             </Label>
-            <Popover open={contactOpen} onOpenChange={setContactOpen}>
-              <PopoverTrigger asChild>
+            <Dialog open={contactOpen} onOpenChange={setContactOpen}>
+              <DialogTrigger asChild>
                 <Button
                   variant="outline"
                   role="combobox"
@@ -112,11 +116,14 @@ export function MeetingForm(props: Props) {
                   {selectedContact ? selectedContact.name : "Select contact..."}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-full p-0">
+              </DialogTrigger>
+              <DialogContent className="p-0" aria-describedby={undefined}>
+                <DialogHeader className="p-4 pb-0">
+                  <DialogTitle>Select Contact</DialogTitle>
+                </DialogHeader>
                 <Command>
                   <CommandInput placeholder="Search contacts..." />
-                  <CommandList>
+                  <CommandList className="max-h-[70vh] h-fit">
                     <CommandEmpty>No contact found.</CommandEmpty>
                     <CommandGroup>
                       {contacts.map((contact) => (
@@ -137,8 +144,8 @@ export function MeetingForm(props: Props) {
                     </CommandGroup>
                   </CommandList>
                 </Command>
-              </PopoverContent>
-            </Popover>
+              </DialogContent>
+            </Dialog>
           </div>
         )}
 
@@ -165,6 +172,8 @@ export function MeetingForm(props: Props) {
           </Button>
         </div>
       </form>
+
+      <ErrorOverlay open={isError} onClose={() => setIsError(false)} />
     </div>
   );
 }

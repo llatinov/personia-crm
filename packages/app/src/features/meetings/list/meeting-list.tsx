@@ -1,8 +1,10 @@
 import { Input } from "@components/ui";
+import { ErrorOverlay } from "app/components/error-overlay/error-overlay";
 import { InfoCard } from "app/components/info-card/info-card";
 import { Loader } from "app/components/loader/loader";
 import { Contact } from "app/types/contacts";
 import { Event } from "app/types/events";
+import { LocationType } from "app/types/location";
 import { Meeting } from "app/types/meetings";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -17,6 +19,7 @@ export function MeetingList() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -34,14 +37,15 @@ export function MeetingList() {
       setEvents(eventsData || []);
       setContacts(contactsData || []);
     } catch {
+      setIsError(true);
     } finally {
       setIsLoading(false);
     }
   };
 
   const getEventForMeeting = (meeting: Meeting) => {
-    if (meeting.eventId) {
-      return events.find((e) => e.id === meeting.eventId);
+    if (meeting.location && meeting.location.type == LocationType.EVENT && meeting.location?.location) {
+      return events.find((e) => e.id === meeting.location!.location);
     }
     return undefined;
   };
@@ -55,7 +59,7 @@ export function MeetingList() {
     ? meetings.filter((meeting) => {
         const lowerQuery = searchQuery.toLowerCase();
         if (meeting.notes?.toLowerCase().includes(lowerQuery)) return true;
-        if (meeting.customLocation?.toLowerCase().includes(lowerQuery)) return true;
+        if (meeting.location?.location.toLowerCase().includes(lowerQuery)) return true;
         const event = getEventForMeeting(meeting);
         if (event?.name.toLowerCase().includes(lowerQuery)) return true;
         const contactName = getContactName(meeting.contactId);
@@ -104,6 +108,8 @@ export function MeetingList() {
           ))}
         </div>
       )}
+
+      <ErrorOverlay open={isError} onClose={() => setIsError(false)} />
     </div>
   );
 }
