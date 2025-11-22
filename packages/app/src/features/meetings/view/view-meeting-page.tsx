@@ -1,6 +1,8 @@
 import { Button } from "@components/ui";
+import { ErrorOverlay } from "app/components/error-overlay/error-overlay";
 import { InfoCard } from "app/components/info-card/info-card";
 import { Loader } from "app/components/loader/loader";
+import { capacitorMobileDeviceOnly } from "app/lib/capacitor";
 import { Paths } from "app/lib/consts";
 import { Contact } from "app/types/contacts";
 import { Event } from "app/types/events";
@@ -12,6 +14,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { apiMockContacts } from "../../contacts/api-mock";
 import { apiMockEvents } from "../../events/api-mock";
 import { apiMockMeetings } from "../api-mock";
+import { CalendarControls } from "./calendar-controls";
 import { DeleteMeetingButton } from "./delete-meeting-button";
 import { MeetingDetailCard } from "./meeting-detail-card";
 
@@ -23,10 +26,12 @@ export function ViewMeetingPage() {
   const [event, setEvent] = useState<Event>();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isError, setIsError] = useState(false);
+  const [reload, setReload] = useState(false);
 
   useEffect(() => {
     loadMeeting();
-  }, [meetingId]);
+  }, [meetingId, reload]);
 
   const loadMeeting = async () => {
     if (!meetingId) {
@@ -51,7 +56,7 @@ export function ViewMeetingPage() {
         setError("Meeting not found");
       }
     } catch {
-      setError("Failed to load meeting");
+      setIsError(true);
     } finally {
       setIsLoading(false);
     }
@@ -74,8 +79,15 @@ export function ViewMeetingPage() {
       ) : error || !meeting ? (
         <InfoCard message={error || "Meeting not found"} />
       ) : (
-        <MeetingDetailCard meeting={meeting} contact={contact} event={event} />
+        <>
+          <MeetingDetailCard meeting={meeting} contact={contact} event={event} />
+          {capacitorMobileDeviceOnly && meeting && (
+            <CalendarControls meeting={meeting} setError={setError} onMeetingUpdate={() => setReload(!reload)} />
+          )}
+        </>
       )}
+
+      <ErrorOverlay open={isError} onClose={() => setIsError(false)} />
     </div>
   );
 }

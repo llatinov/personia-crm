@@ -34,10 +34,12 @@ export function MeetingCard(props: Props) {
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <CardTitle className="text-lg flex items-center gap-2">
+            <CardTitle className="text-lg">{props.meeting.title}</CardTitle>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
               <Calendar className="h-4 w-4" />
               {formatDate(props.meeting.date)}
-            </CardTitle>
+              {props.meeting.time && ` at ${props.meeting.time}`}
+            </div>
             {isUpcoming && <span className="text-xs text-blue-600 font-medium">Upcoming</span>}
           </div>
         </div>

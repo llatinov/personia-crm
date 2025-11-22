@@ -1,5 +1,9 @@
 import { ContactAttributeCategory, ContactAttributeDefinition, ContactAttributeInputType } from "app/types/contacts";
 
+export const CustomContactAttributeId = "custom";
+export const CustomContactAttributeIcon = "📝";
+export const MeetingDefaultTime = "10:00";
+
 export enum Paths {
   HOME = "/",
   USER_LOGIN = "/login",
@@ -13,9 +17,6 @@ export enum Paths {
   MEETINGS_ADD = "/meetings/add",
   MEETINGS_VIEW = "/meetings/:meetingId"
 }
-
-export const CustomContactAttributeId = "custom";
-export const CustomContactAttributeIcon = "📝";
 
 export const CONTACT_ATTRIBUTES: Record<string, ContactAttributeDefinition> = {
   email: {

@@ -14,6 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  Input,
   Label,
   Textarea
 } from "@components/ui";
@@ -38,8 +39,11 @@ export function MeetingForm(props: Props) {
   const navigate = useNavigate();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [selectedContactId, setSelectedContactId] = useState(props.contactId || "");
+  const [selectedContact, setSelectedContact] = useState<Contact>();
+  const [title, setTitle] = useState("");
   const [location, setLocation] = useState<Location>();
   const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
   const [notes, setNotes] = useState("");
   const [contactOpen, setContactOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -48,6 +52,12 @@ export function MeetingForm(props: Props) {
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    const selectedContact = contacts.find((c) => c.id === selectedContactId);
+    setSelectedContact(selectedContact);
+    setTitle(`Catch up with ${selectedContact?.name}`);
+  }, [selectedContactId]);
 
   const loadData = async () => {
     const contactsData = await apiMockContacts.getContacts();
@@ -75,8 +85,10 @@ export function MeetingForm(props: Props) {
 
     const meeting = {
       contactId: selectedContactId,
+      title: title.trim() || undefined,
       location,
       date,
+      time: time || undefined,
       notes: notes.trim() || undefined
     } as Meeting;
 
@@ -94,8 +106,6 @@ export function MeetingForm(props: Props) {
       setIsLoading(false);
     }
   };
-
-  const selectedContact = contacts.find((c) => c.id === selectedContactId);
 
   return (
     <div>
@@ -149,7 +159,25 @@ export function MeetingForm(props: Props) {
           </div>
         )}
 
+        <div className="space-y-3">
+          <Label htmlFor="title">
+            Title <span className="text-destructive">*</span>
+          </Label>
+          <Input
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Meeting title..."
+            required
+          />
+        </div>
+
         <DateInput label="Date" name="meetingDate" value={date} onChange={setDate} required />
+
+        <div className="space-y-3">
+          <Label htmlFor="time">Time</Label>
+          <Input id="time" type="time" value={time} onChange={(e) => setTime(e.target.value)} />
+        </div>
 
         <LocationPicker location={location} label="Location" onLocationChange={setLocation} />
 

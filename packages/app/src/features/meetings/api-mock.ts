@@ -65,6 +65,19 @@ export class API extends ApiBase {
   }
 
   /**
+   * Update a meeting
+   */
+  async updateMeeting(id: string, meeting: Partial<Meeting>): Promise<boolean> {
+    await this.delay();
+
+    if (this.shouldSimulateCreateError()) {
+      throw new Error("Failed to update meeting. Please try again.");
+    }
+
+    return meetingsRepository.update(id, meeting);
+  }
+
+  /**
    * Delete a meeting
    */
   async deleteMeeting(id: string): Promise<void> {

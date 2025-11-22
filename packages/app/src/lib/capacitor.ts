@@ -1,16 +1,15 @@
 import { App } from "@capacitor/app";
 import { CapacitorBarcodeScanner, CapacitorBarcodeScannerTypeHint } from "@capacitor/barcode-scanner";
 import { Capacitor } from "@capacitor/core";
+import { CapacitorCalendar, CreateEventOptions } from "@ebarooni/capacitor-calendar";
 import { Paths } from "./consts";
 
-const isDevMode = () => process.env.NODE_ENV !== "production";
-
-const isWeb = () => Capacitor.getPlatform() === "web";
-
-export const capacitorMobileDeviceOnly = () => !isWeb() || isDevMode();
+const isWeb = Capacitor.getPlatform() === "web";
+export const isDevMode = process.env.NODE_ENV !== "production";
+export const capacitorMobileDeviceOnly = !isWeb || isDevMode;
 
 export const capacitorScanQrCode = async () => {
-  if (isDevMode()) {
+  if (isDevMode) {
     return "development scan result";
   }
 
@@ -20,7 +19,7 @@ export const capacitorScanQrCode = async () => {
 };
 
 export const capacitorBackButtonHandler = (getCurrentPath: () => string, goBack: () => void) => {
-  if (isWeb()) {
+  if (isWeb) {
     return;
   }
 
@@ -33,4 +32,16 @@ export const capacitorBackButtonHandler = (getCurrentPath: () => string, goBack:
       goBack();
     }
   });
+};
+
+export const capacitorAddEventToCalendar = async (eventDetails: CreateEventOptions) => {
+  if (isDevMode) return;
+
+  await CapacitorCalendar.createEventWithPrompt(eventDetails);
+};
+
+export const capacitorOpenCalendar = async (startDate: Date) => {
+  if (isDevMode) return;
+
+  await CapacitorCalendar.openCalendar({ date: startDate.getTime() });
 };

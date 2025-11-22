@@ -23,7 +23,7 @@ export function AddContactPage() {
           <h1 className="text-2xl font-bold tracking-tight">Add Contact</h1>
           <p className="text-muted-foreground mt-1">Create a new contact in your CRM</p>
         </div>
-        {capacitorMobileDeviceOnly() && (
+        {capacitorMobileDeviceOnly && (
           <div className="flex mt-1 sm:mt-0">
             <Button onClick={scanQrCode}>Scan QR Code</Button>
           </div>

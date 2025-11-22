@@ -23,6 +23,7 @@
     "@capacitor/dialog": "^7.0.2",
     "@capacitor/ios": "^7.4.4",
     "@capacitor/status-bar": "^7.0.3",
+    "@ebarooni/capacitor-calendar": "^7.2.0",
     "@tailwindcss/vite": "^4.1.17",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

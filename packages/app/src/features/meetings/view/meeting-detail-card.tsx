@@ -26,11 +26,15 @@ export function MeetingDetailCard(props: Props) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Calendar className="h-5 w-5" />
+        <CardTitle>{props.meeting.title}</CardTitle>
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Calendar className="h-4 w-4" />
           {formatDate(props.meeting.date)}
-          {isUpcoming && <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">Upcoming</span>}
-        </CardTitle>
+          {props.meeting.time && ` at ${props.meeting.time}`}
+          {isUpcoming && (
+            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full ml-2">Upcoming</span>
+          )}
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
